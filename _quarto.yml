@@ -1,0 +1,28 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "KAIST Engineering Biology Programming"
+  reader-mode: true
+  author: "Haseong"
+  date: "2025-09-22"
+  page-footer: 
+    left: | 
+      2025 lecture note written by Haseong Kim
+    right: | 
+      This book was built with Quarto
+  chapters:
+    - index.qmd
+    - day1_optimization.ipynb
+    - day2_neural_networks.ipynb
+  
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
