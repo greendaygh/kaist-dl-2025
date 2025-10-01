@@ -195,6 +195,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Day2 Neural Networks</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./day3_cnn_dna.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Day3 CNN with DNA sequence</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -270,125 +276,27 @@ window.Quarto = {
 <section id="install-required-libraries" class="level4" data-number="2.1.0.3">
 <h4 data-number="2.1.0.3" class="anchored" data-anchor-id="install-required-libraries"><span class="header-section-number">2.1.0.3</span> Install Required Libraries</h4>
 <p>Google Colab comes with many libraries pre-installed, but you might need to install some additional ones, such as <code>biopython</code> and <code>scikit-bio</code>. You can do this using the <code>!pip install</code> command directly in a cell.</p>
-<div id="cell-3" class="cell" data-outputid="0e80e3cb-7d37-4a8f-cbaf-a391a03d6aec" data-execution_count="8">
+<div id="cell-3" class="cell" data-outputid="0e80e3cb-7d37-4a8f-cbaf-a391a03d6aec">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install biopython scikit<span class="op">-</span>bio matplotlib</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Requirement already satisfied: biopython in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (1.84)
-Requirement already satisfied: scikit-bio in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (0.6.2)
-Requirement already satisfied: matplotlib in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (3.9.2)
-Requirement already satisfied: numpy in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from biopython) (1.26.4)
-Requirement already satisfied: requests&gt;=2.20.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (2.32.3)
-Requirement already satisfied: decorator&gt;=3.4.2 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (5.1.1)
-Requirement already satisfied: natsort&gt;=4.0.3 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (8.4.0)
-Requirement already satisfied: pandas&gt;=1.5.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (2.2.3)
-Requirement already satisfied: scipy&gt;=1.9.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (1.14.1)
-Requirement already satisfied: h5py&gt;=3.6.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (3.12.1)
-Requirement already satisfied: biom-format&gt;=2.1.16 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (2.1.16)
-Requirement already satisfied: statsmodels&gt;=0.14.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (0.14.4)
-Requirement already satisfied: contourpy&gt;=1.0.1 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (1.3.1)
-Requirement already satisfied: cycler&gt;=0.10 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (0.12.1)
-Requirement already satisfied: fonttools&gt;=4.22.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (4.55.0)
-Requirement already satisfied: kiwisolver&gt;=1.3.1 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (1.4.7)
-Requirement already satisfied: packaging&gt;=20.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (24.2)
-Requirement already satisfied: pillow&gt;=8 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (11.0.0)
-Requirement already satisfied: pyparsing&gt;=2.3.1 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (3.2.0)
-Requirement already satisfied: python-dateutil&gt;=2.7 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from matplotlib) (2.9.0)
-Requirement already satisfied: click in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from biom-format&gt;=2.1.16-&gt;scikit-bio) (8.1.7)
-Requirement already satisfied: pytz&gt;=2020.1 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from pandas&gt;=1.5.0-&gt;scikit-bio) (2024.2)
-Requirement already satisfied: tzdata&gt;=2022.7 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from pandas&gt;=1.5.0-&gt;scikit-bio) (2024.2)
-Requirement already satisfied: six&gt;=1.5 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib) (1.16.0)
-Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (3.4.0)
-Requirement already satisfied: idna&lt;4,&gt;=2.5 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (3.10)
-Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (2.2.3)
-Requirement already satisfied: certifi&gt;=2017.4.17 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (2024.8.30)
-Requirement already satisfied: patsy&gt;=0.5.6 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from statsmodels&gt;=0.14.0-&gt;scikit-bio) (1.0.1)</code></pre>
 </div>
-</div>
-<div id="cell-4" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install scikit<span class="op">-</span>bio</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Requirement already satisfied: scikit-bio in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (0.6.2)
-Requirement already satisfied: requests&gt;=2.20.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (2.32.3)
-Requirement already satisfied: decorator&gt;=3.4.2 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (5.1.1)
-Requirement already satisfied: natsort&gt;=4.0.3 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (8.4.0)
-Requirement already satisfied: numpy&gt;=1.17.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (1.26.4)
-Requirement already satisfied: pandas&gt;=1.5.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (2.2.3)
-Requirement already satisfied: scipy&gt;=1.9.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (1.14.1)
-Requirement already satisfied: h5py&gt;=3.6.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (3.12.1)
-Requirement already satisfied: biom-format&gt;=2.1.16 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (2.1.16)
-Requirement already satisfied: statsmodels&gt;=0.14.0 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from scikit-bio) (0.14.4)
-Requirement already satisfied: click in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from biom-format&gt;=2.1.16-&gt;scikit-bio) (8.1.7)
-Requirement already satisfied: python-dateutil&gt;=2.8.2 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from pandas&gt;=1.5.0-&gt;scikit-bio) (2.9.0)
-Requirement already satisfied: pytz&gt;=2020.1 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from pandas&gt;=1.5.0-&gt;scikit-bio) (2024.2)
-Requirement already satisfied: tzdata&gt;=2022.7 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from pandas&gt;=1.5.0-&gt;scikit-bio) (2024.2)
-Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (3.4.0)
-Requirement already satisfied: idna&lt;4,&gt;=2.5 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (3.10)
-Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (2.2.3)
-Requirement already satisfied: certifi&gt;=2017.4.17 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from requests&gt;=2.20.0-&gt;scikit-bio) (2024.8.30)
-Requirement already satisfied: patsy&gt;=0.5.6 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from statsmodels&gt;=0.14.0-&gt;scikit-bio) (1.0.1)
-Requirement already satisfied: packaging&gt;=21.3 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from statsmodels&gt;=0.14.0-&gt;scikit-bio) (24.2)
-Requirement already satisfied: six&gt;=1.5 in /home/haseong/mambaforge/envs/kaist-prog/lib/python3.11/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=1.5.0-&gt;scikit-bio) (1.16.0)</code></pre>
-</div>
+<div id="cell-4" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install scikit<span class="op">-</span>bio</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="import-libraries-and-verify-installation" class="level4" data-number="2.1.0.4">
 <h4 data-number="2.1.0.4" class="anchored" data-anchor-id="import-libraries-and-verify-installation"><span class="header-section-number">2.1.0.4</span> Import Libraries and Verify Installation</h4>
 <p>In a new code cell, import the libraries to ensure they are installed correctly.</p>
 <div id="cell-6" class="cell" data-outputid="c65f85bd-8294-4606-e90e-586fe7170cc6" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing necessary libraries</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Bio</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> skbio</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Biopython version:"</span>, Bio.__version__)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"scikit-bio version:"</span>, skbio.__version__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing necessary libraries</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Bio</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> skbio</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Biopython version:"</span>, Bio.__version__)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"scikit-bio version:"</span>, skbio.__version__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Biopython version: 1.84
 scikit-bio version: 0.6.2</code></pre>
 </div>
-</div>
-</section>
-<section id="upload-files-to-colab" class="level4" data-number="2.1.0.5">
-<h4 data-number="2.1.0.5" class="anchored" data-anchor-id="upload-files-to-colab"><span class="header-section-number">2.1.0.5</span> Upload Files to Colab</h4>
-<ul>
-<li><p>Create <code>2025-kaist-lecture</code> folder</p></li>
-<li><p>ipynb file open with colab</p></li>
-<li><p>Download ganbank files from ncbi and upload the files</p></li>
-<li><p>current directory</p></li>
-</ul>
-<div id="cell-9" class="cell" data-outputid="b07334f5-df6e-433d-e8df-a62fb1d98882" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pwd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>/home/haseong/lecture/kaist-dl-2025</code></pre>
-</div>
-</div>
-<ul>
-<li>현재 작업 디렉토리를 위 생성한 디렉토리로 변경</li>
-</ul>
-<div id="cell-11" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>os.chdir(<span class="st">'drive/MyDrive/2025-kaist-eb'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="cell-12" class="cell" data-outputid="5c1878e5-992d-47ff-e946-75b820f1b778">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pwd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li>분석을 위한 genbank 등의 파일을 ncbi에서 다운로드 후 위 폴더에 복사</li>
-<li>또는 아래 코드를 이용해서 현재 작업 디렉토리에 업로드</li>
-</ul>
-<div id="cell-14" class="cell" data-outputid="de42a665-c59c-46c8-efe9-f000a88cf920">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> files</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>uploaded <span class="op">=</span> files.upload()</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Listing the uploaded files</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> uploaded.keys():</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(filename)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data:image/png;base64,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" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
 </div>
 </section>
 </section>
@@ -398,27 +306,27 @@ scikit-bio version: 0.6.2</code></pre>
 <section id="basics-of-numpy" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="basics-of-numpy"><span class="header-section-number">2.2.1</span> Basics of NumPy</h3>
 <p><strong>Installation:</strong></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!pip</span> install numpy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="cell-17" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a 1D array</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>arr1 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a 2D array</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>arr2 <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]])</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr1)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Element-wise operations</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>arr3 <span class="op">=</span> arr1 <span class="op">*</span> <span class="dv">2</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr3)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Mathematical functions</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.sqrt(arr1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!pip</span> install numpy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-8" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a 1D array</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>arr1 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a 2D array</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>arr2 <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]])</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr1)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Element-wise operations</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>arr3 <span class="op">=</span> arr1 <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr3)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Mathematical functions</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.sqrt(arr1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1 2 3 4 5]
 [[1 2 3]
@@ -434,14 +342,14 @@ scikit-bio version: 0.6.2</code></pre>
 <li>Allows only data of the same type</li>
 <li>More than 20 times faster than lists</li>
 </ul>
-<div id="cell-20" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>display(np.ones(<span class="dv">4</span>))</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>display(np.ones((<span class="dv">3</span>, <span class="dv">4</span>)))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>display(np.ones((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)))</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>np.shape(np.ones((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-11" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>display(np.ones(<span class="dv">4</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>display(np.ones((<span class="dv">3</span>, <span class="dv">4</span>)))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>display(np.ones((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>np.shape(np.ones((<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>array([1., 1., 1., 1.])</code></pre>
 </div>
@@ -472,18 +380,18 @@ scikit-bio version: 0.6.2</code></pre>
 <ul>
 <li>Create numpy objects</li>
 </ul>
-<div id="cell-23" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>arr <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(arr))</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>])</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a.dtype)</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a.shape)</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-14" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>arr <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(arr))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>])</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a.dtype)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a.shape)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1, 2, 3]
 &lt;class 'list'&gt;
@@ -493,12 +401,12 @@ int64
 &lt;class 'numpy.ndarray'&gt;</code></pre>
 </div>
 </div>
-<div id="cell-24" class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>arr2 <span class="op">=</span> np.array([[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>], [<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>]])</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(arr2))</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2.shape)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2.dtype)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-15" class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>arr2 <span class="op">=</span> np.array([[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>], [<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>]])</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(arr2))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2.shape)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arr2.dtype)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1 2 3]
  [4 5 6]]
@@ -522,15 +430,15 @@ int64</code></pre>
 <li><p>np.zeros(), np.ones(), np.arange()</p></li>
 <li><p>Broadcasting: A set of rules that allow arrays of different shapes to be used together in arithmetic operations without explicitly copying data</p></li>
 </ul>
-<div id="cell-27" class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.arange(<span class="dv">1</span>, <span class="dv">10</span>).reshape(<span class="dv">3</span>,<span class="dv">3</span>) <span class="co"># [1, 10)</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.ones((<span class="dv">3</span>,<span class="dv">4</span>), dtype<span class="op">=</span>np.int16)</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.ones((<span class="dv">3</span>,<span class="dv">4</span>), dtype<span class="op">=</span>np.int16)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(b)</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a<span class="op">+</span>b)</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a<span class="op">-</span>b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-18" class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.arange(<span class="dv">1</span>, <span class="dv">10</span>).reshape(<span class="dv">3</span>,<span class="dv">3</span>) <span class="co"># [1, 10)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.ones((<span class="dv">3</span>,<span class="dv">4</span>), dtype<span class="op">=</span>np.int16)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.ones((<span class="dv">3</span>,<span class="dv">4</span>), dtype<span class="op">=</span>np.int16)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(b)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a<span class="op">+</span>b)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a<span class="op">-</span>b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1 2 3]
  [4 5 6]
@@ -549,14 +457,14 @@ int64</code></pre>
  [0 0 0 0]]</code></pre>
 </div>
 </div>
-<div id="cell-28" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>],</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]])   <span class="co"># shape (2,3)</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.array([<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>])  <span class="co"># shape (3,)</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> a <span class="op">+</span> b</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-19" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>],</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]])   <span class="co"># shape (2,3)</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.array([<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>])  <span class="co"># shape (3,)</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> a <span class="op">+</span> b</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[11 22 33]
  [14 25 36]]</code></pre>
@@ -603,40 +511,40 @@ y_i = b_0 + b_1 x_i  + \epsilon_i \text{ where } \epsilon_i \sim \text{ iid } N(
 <ul>
 <li>residuals: difference between sample observed and estimated values</li>
 </ul>
-<div id="cell-31" class="cell" data-outputid="51a68395-b376-4454-c9d8-79aa32dc3f97" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.random.rand(<span class="dv">20</span>, <span class="dv">1</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="dv">4</span> <span class="op">+</span> X<span class="op">*</span><span class="fl">0.8</span> <span class="op">+</span> np.random.rand(<span class="dv">20</span>, <span class="dv">1</span>)</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>X_b <span class="op">=</span> np.c_[np.ones(<span class="bu">len</span>(X)), X]</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># print(X)</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>theta_best <span class="op">=</span> np.linalg.inv(X_b.T <span class="op">@</span> X_b) <span class="op">@</span> (X_b.T) <span class="op">@</span> Y</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>Y_pred_org <span class="op">=</span> X_b <span class="op">@</span> theta_best</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co"># print(theta_best)</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.random.rand(<span class="dv">100</span>, <span class="dv">1</span>)</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>X_new_b <span class="op">=</span> np.c_[np.ones(<span class="bu">len</span>(X_new)), X_new]</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>Y_pred <span class="op">=</span> X_new_b <span class="op">@</span> theta_best</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, Y, color<span class="op">=</span><span class="st">"#000000"</span>)</span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>plt.plot(X_new, Y_pred, color<span class="op">=</span><span class="st">'#cccccc'</span>, label<span class="op">=</span><span class="st">'Predictions'</span>)</span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot residuals</span></span>
-<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(Y)):</span>
-<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>    plt.vlines(x<span class="op">=</span>X[i], ymin<span class="op">=</span><span class="bu">min</span>(Y[i], Y_pred_org[i]), ymax<span class="op">=</span><span class="bu">max</span>(Y[i], Y_pred_org[i]), color<span class="op">=</span><span class="st">'green'</span>, linestyle<span class="op">=</span><span class="st">'dotted'</span>)</span>
-<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'X'</span>)</span>
-<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Y'</span>)</span>
-<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>plt.plot()</span>
-<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-22" class="cell" data-outputid="51a68395-b376-4454-c9d8-79aa32dc3f97" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.random.rand(<span class="dv">20</span>, <span class="dv">1</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="dv">4</span> <span class="op">+</span> X<span class="op">*</span><span class="fl">0.8</span> <span class="op">+</span> np.random.rand(<span class="dv">20</span>, <span class="dv">1</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>X_b <span class="op">=</span> np.c_[np.ones(<span class="bu">len</span>(X)), X]</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co"># print(X)</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>theta_best <span class="op">=</span> np.linalg.inv(X_b.T <span class="op">@</span> X_b) <span class="op">@</span> (X_b.T) <span class="op">@</span> Y</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>Y_pred_org <span class="op">=</span> X_b <span class="op">@</span> theta_best</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># print(theta_best)</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.random.rand(<span class="dv">100</span>, <span class="dv">1</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>X_new_b <span class="op">=</span> np.c_[np.ones(<span class="bu">len</span>(X_new)), X_new]</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>Y_pred <span class="op">=</span> X_new_b <span class="op">@</span> theta_best</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, Y, color<span class="op">=</span><span class="st">"#000000"</span>)</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>plt.plot(X_new, Y_pred, color<span class="op">=</span><span class="st">'#cccccc'</span>, label<span class="op">=</span><span class="st">'Predictions'</span>)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot residuals</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(Y)):</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    plt.vlines(x<span class="op">=</span>X[i], ymin<span class="op">=</span><span class="bu">min</span>(Y[i], Y_pred_org[i]), ymax<span class="op">=</span><span class="bu">max</span>(Y[i], Y_pred_org[i]), color<span class="op">=</span><span class="st">'green'</span>, linestyle<span class="op">=</span><span class="st">'dotted'</span>)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'X'</span>)</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Y'</span>)</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>plt.plot()</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="day1_optimization_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="day1_optimization_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -858,48 +766,48 @@ J(\beta) = Y^T Y - 2 Y^T X \beta + \beta^T X^T X \beta
 <p><span class="math display">\[
 \beta^{(t+1)} = \beta^{(t)} - \alpha \nabla_\beta J(\beta) \text{ where } \alpha \text{ is learning rate}
 \]</span></p>
-<div id="cell-47" class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate synthetic data</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.random.rand(<span class="dv">100</span>, <span class="dv">1</span>)  <span class="co"># 100 samples, 1 feature from [0, 1) uniform distribution</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">4</span> <span class="op">+</span> <span class="dv">3</span> <span class="op">*</span> X <span class="op">+</span> np.random.randn(<span class="dv">100</span>, <span class="dv">1</span>)  <span class="co"># y = 4 + 3X + noise (Gaussian noise)</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add bias term (intercept)</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>X_b <span class="op">=</span> np.c_[np.ones((X.shape[<span class="dv">0</span>], <span class="dv">1</span>)), X]</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize parameters</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>beta <span class="op">=</span> np.random.randn(<span class="dv">2</span>, <span class="dv">1</span>)  <span class="co"># Random initial coefficients</span></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">0.01</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>n_iterations <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> X_b.shape[<span class="dv">0</span>]  <span class="co"># Number of samples</span></span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>beta_updates <span class="op">=</span> [beta.copy()]</span>
-<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Gradient Descent</span></span>
-<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> iteration <span class="kw">in</span> <span class="bu">range</span>(n_iterations):</span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    gradients <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">/</span>m <span class="op">*</span> X_b.T <span class="op">@</span> (y <span class="op">-</span> X_b <span class="op">@</span> beta)  <span class="co"># Compute gradient</span></span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> beta <span class="op">-</span> learning_rate <span class="op">*</span> gradients  <span class="co"># Update parameters</span></span>
-<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>    beta_updates.append(beta.copy())</span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Final parameters</span></span>
-<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estimated coefficients (beta):"</span>, beta)</span>
-<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions</span></span>
-<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> X_b <span class="op">@</span> beta</span>
-<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the data and regression line</span></span>
-<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
-<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, y, color<span class="op">=</span><span class="st">"blue"</span>, label<span class="op">=</span><span class="st">"Data points"</span>)</span>
-<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>plt.plot(X, y_pred, color<span class="op">=</span><span class="st">"red"</span>, label<span class="op">=</span><span class="st">"Regression line"</span>)</span>
-<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"X"</span>)</span>
-<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
-<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Linear Regression using Gradient Descent"</span>)</span>
-<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
-<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-38" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate synthetic data</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.random.rand(<span class="dv">100</span>, <span class="dv">1</span>)  <span class="co"># 100 samples, 1 feature from [0, 1) uniform distribution</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">4</span> <span class="op">+</span> <span class="dv">3</span> <span class="op">*</span> X <span class="op">+</span> np.random.randn(<span class="dv">100</span>, <span class="dv">1</span>)  <span class="co"># y = 4 + 3X + noise (Gaussian noise)</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add bias term (intercept)</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>X_b <span class="op">=</span> np.c_[np.ones((X.shape[<span class="dv">0</span>], <span class="dv">1</span>)), X]</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize parameters</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>beta <span class="op">=</span> np.random.randn(<span class="dv">2</span>, <span class="dv">1</span>)  <span class="co"># Random initial coefficients</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>n_iterations <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> X_b.shape[<span class="dv">0</span>]  <span class="co"># Number of samples</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>beta_updates <span class="op">=</span> [beta.copy()]</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Gradient Descent</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> iteration <span class="kw">in</span> <span class="bu">range</span>(n_iterations):</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    gradients <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">/</span>m <span class="op">*</span> X_b.T <span class="op">@</span> (y <span class="op">-</span> X_b <span class="op">@</span> beta)  <span class="co"># Compute gradient</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> beta <span class="op">-</span> learning_rate <span class="op">*</span> gradients  <span class="co"># Update parameters</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>    beta_updates.append(beta.copy())</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Final parameters</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estimated coefficients (beta):"</span>, beta)</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> X_b <span class="op">@</span> beta</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the data and regression line</span></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, y, color<span class="op">=</span><span class="st">"blue"</span>, label<span class="op">=</span><span class="st">"Data points"</span>)</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>plt.plot(X, y_pred, color<span class="op">=</span><span class="st">"red"</span>, label<span class="op">=</span><span class="st">"Regression line"</span>)</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"X"</span>)</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Linear Regression using Gradient Descent"</span>)</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Estimated coefficients (beta): [[2.96262018]
  [3.80192916]]</code></pre>
@@ -907,28 +815,28 @@ J(\beta) = Y^T Y - 2 Y^T X \beta + \beta^T X^T X \beta
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="day1_optimization_files/figure-html/cell-17-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="day1_optimization_files/figure-html/cell-13-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="cell-48" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize beta updates</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, beta <span class="kw">in</span> <span class="bu">enumerate</span>(beta_updates):</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Iteration </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: beta = </span><span class="sc">{</span>beta<span class="sc">.</span>flatten()<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot convergence of coefficients</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>beta_updates <span class="op">=</span> np.array(beta_updates).squeeze()</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(n_iterations <span class="op">+</span> <span class="dv">1</span>), beta_updates[:, <span class="dv">0</span>], label<span class="op">=</span><span class="st">'Intercept (beta[0])'</span>)</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(n_iterations <span class="op">+</span> <span class="dv">1</span>), beta_updates[:, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Slope (beta[1])'</span>)</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Iteration'</span>)</span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Value of beta'</span>)</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Convergence of Coefficients'</span>)</span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-39" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize beta updates</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, beta <span class="kw">in</span> <span class="bu">enumerate</span>(beta_updates):</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Iteration </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: beta = </span><span class="sc">{</span>beta<span class="sc">.</span>flatten()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot convergence of coefficients</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>beta_updates <span class="op">=</span> np.array(beta_updates).squeeze()</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(n_iterations <span class="op">+</span> <span class="dv">1</span>), beta_updates[:, <span class="dv">0</span>], label<span class="op">=</span><span class="st">'Intercept (beta[0])'</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(n_iterations <span class="op">+</span> <span class="dv">1</span>), beta_updates[:, <span class="dv">1</span>], label<span class="op">=</span><span class="st">'Slope (beta[1])'</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Iteration'</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Value of beta'</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Convergence of Coefficients'</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Iteration 0: beta = [0.01300189 1.45353408]
 Iteration 1: beta = [0.12180499 1.56507648]
@@ -1035,7 +943,7 @@ Iteration 100: beta = [2.96262018 3.80192916]</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="day1_optimization_files/figure-html/cell-18-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="day1_optimization_files/figure-html/cell-14-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
