@@ -299,8 +299,8 @@ y = \sigma(W \cdot X + b)
 </ul>
 <p>Where:</p>
 <ul>
-<li><span class="math inline">\(W\)</span>: Weight vector (equivalent to () in regression).</li>
-<li><span class="math inline">\(b\)</span>: Bias term (equivalent to (_0) in regression).</li>
+<li><span class="math inline">\(W\)</span>: Weight vector (equivalent to (<span class="math inline">\(\beta\)</span>) in regression).</li>
+<li><span class="math inline">\(b\)</span>: Bias term (equivalent to (<span class="math inline">\(\beta_0\)</span>) in regression).</li>
 <li><span class="math inline">\(\sigma\)</span>: activation function</li>
 <li>Multiple regression can be seen as a very simple neural network</li>
 </ul>
@@ -346,15 +346,15 @@ y = \sigma(W_2 \cdot \sigma(W_1 \cdot X + b_1) + b_2)
 <section id="activation-functions" class="level3" data-number="3.3.5">
 <h3 data-number="3.3.5" class="anchored" data-anchor-id="activation-functions"><span class="header-section-number">3.3.5</span> Activation Functions</h3>
 <ul>
-<li>Activation functions introduce non-linearity to the model, enabling it to learn complex patterns.</li>
-<li>Common activation functions include:
+<li><p>Activation functions introduce non-linearity to the model, enabling it to learn complex patterns.</p></li>
+<li><p>Common activation functions include:</p>
 <ul>
-<li><strong>ReLU (Rectified Linear Unit)</strong>: $ f(x) = (0, x) $</li>
-<li><strong>Sigmoid</strong>: $ f(x) = $</li>
-<li><strong>Tanh</strong>: $ f(x) = $</li>
+<li><p><strong>ReLU (Rectified Linear Unit)</strong>: $ f(x) = (0, x) $</p></li>
+<li><p><strong>Sigmoid</strong>: $ f(x) = $</p></li>
+<li><p><strong>Tanh</strong>: $ f(x) = $</p></li>
 </ul></li>
 </ul>
-<div id="cell-11" class="cell" data-execution_count="16">
+<div id="cell-11" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -427,11 +427,23 @@ y = \sigma(W_2 \cdot \sigma(W_1 \cdot X + b_1) + b_2)
 </ul>
 <section id="example-of-forward-pass-and-loss-function" class="level4" data-number="3.3.6.1">
 <h4 data-number="3.3.6.1" class="anchored" data-anchor-id="example-of-forward-pass-and-loss-function"><span class="header-section-number">3.3.6.1</span> (Example) of Forward Pass and Loss Function</h4>
-<p>Let’s consider a simple neural network with: - <strong>1 Input Layer</strong>: 2 input nodes. - <strong>1 Hidden Layer</strong>: 3 nodes with ReLU (Rectified Linear Unit) activation. - <strong>1 Output Layer</strong>: 1 node with sigmoid activation.</p>
+<ul>
+<li><p>Let’s consider a simple neural network with:</p>
+<ul>
+<li><p><strong>1 Input Layer</strong>: 2 input nodes.</p></li>
+<li><p><strong>1 Hidden Layer</strong>: 3 nodes with ReLU (Rectified Linear Unit) activation.</p></li>
+<li><p><strong>1 Output Layer</strong>: 1 node with sigmoid activation.</p></li>
+</ul></li>
+</ul>
 <p><img src="images/nn_ex.png" class="img-fluid"></p>
-<p>The forward pass computes: 1. <strong>Input to Hidden Layer</strong>: <span class="math display">\[
-   Z^{(1)} = X W^{(1)} + b^{(1)} \\
-\]</span></p>
+<ul>
+<li>The forward pass computes:</li>
+</ul>
+<ol type="1">
+<li><strong>Input to Hidden Layer</strong>: <span class="math display">\[
+Z^{(1)} = X W^{(1)} + b^{(1)} \\
+\]</span></li>
+</ol>
 <p><span class="math display">\[\begin{equation}
 \begin{pmatrix}
 z^{(1)}_1 \\
@@ -622,7 +634,10 @@ L = \frac{1}{n} || y - \hat{y} ||^2 =  \frac{1}{n}\sum(y_i-\hat{y}_i)^2
 </ul>
 <section id="chain-rule" class="level4" data-number="3.3.8.1">
 <h4 data-number="3.3.8.1" class="anchored" data-anchor-id="chain-rule"><span class="header-section-number">3.3.8.1</span> Chain Rule</h4>
-<p>Derivative of a composite function <span class="math display">\[
+<ul>
+<li>Derivative of a composite function</li>
+</ul>
+<p><span class="math display">\[
 z = f(g(x))
 \]</span></p>
 <p><span class="math display">\[
