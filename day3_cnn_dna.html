@@ -182,19 +182,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#objectives" id="toc-objectives" class="nav-link active" data-scroll-target="#objectives"><span class="header-section-number">4.1</span> Objectives</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">4.2</span> Data</a>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation"><span class="header-section-number">4.2</span> Data preparation</a>
   <ul class="collapse">
-  <li><a href="#one-hot-encoding" id="toc-one-hot-encoding" class="nav-link" data-scroll-target="#one-hot-encoding"><span class="header-section-number">4.2.1</span> One-hot encoding</a></li>
-  <li><a href="#set-sequence-motif-for-simulation" id="toc-set-sequence-motif-for-simulation" class="nav-link" data-scroll-target="#set-sequence-motif-for-simulation"><span class="header-section-number">4.2.2</span> Set sequence motif for simulation</a></li>
-  <li><a href="#simulation-data-generation" id="toc-simulation-data-generation" class="nav-link" data-scroll-target="#simulation-data-generation"><span class="header-section-number">4.2.3</span> Simulation data generation</a></li>
-  <li><a href="#dna-data-preprocessing" id="toc-dna-data-preprocessing" class="nav-link" data-scroll-target="#dna-data-preprocessing"><span class="header-section-number">4.2.4</span> DNA data preprocessing</a></li>
+  <li><a href="#encoding-and-embedding-in-deep-learning" id="toc-encoding-and-embedding-in-deep-learning" class="nav-link" data-scroll-target="#encoding-and-embedding-in-deep-learning"><span class="header-section-number">4.2.1</span> Encoding and Embedding in Deep Learning</a></li>
+  <li><a href="#one-hot-encoding-with-dna-sequences" id="toc-one-hot-encoding-with-dna-sequences" class="nav-link" data-scroll-target="#one-hot-encoding-with-dna-sequences"><span class="header-section-number">4.2.2</span> One-hot encoding with DNA sequences</a></li>
+  <li><a href="#sequence-motifs-for-motif-search-in-one-hot-encoded-dna" id="toc-sequence-motifs-for-motif-search-in-one-hot-encoded-dna" class="nav-link" data-scroll-target="#sequence-motifs-for-motif-search-in-one-hot-encoded-dna"><span class="header-section-number">4.2.3</span> Sequence motifs for motif search in one-hot encoded DNA</a></li>
+  <li><a href="#simulated-data-generation" id="toc-simulated-data-generation" class="nav-link" data-scroll-target="#simulated-data-generation"><span class="header-section-number">4.2.4</span> Simulated data generation</a></li>
+  <li><a href="#dna-data-preprocessing" id="toc-dna-data-preprocessing" class="nav-link" data-scroll-target="#dna-data-preprocessing"><span class="header-section-number">4.2.5</span> DNA data preprocessing</a></li>
   </ul></li>
-  <li><a href="#cnn-model" id="toc-cnn-model" class="nav-link" data-scroll-target="#cnn-model"><span class="header-section-number">4.3</span> CNN model</a>
+  <li><a href="#cnn-model-quick-review" id="toc-cnn-model-quick-review" class="nav-link" data-scroll-target="#cnn-model-quick-review"><span class="header-section-number">4.3</span> CNN model quick review</a>
   <ul class="collapse">
   <li><a href="#training" id="toc-training" class="nav-link" data-scroll-target="#training"><span class="header-section-number">4.3.1</span> Training</a></li>
   <li><a href="#model-evaluation" id="toc-model-evaluation" class="nav-link" data-scroll-target="#model-evaluation"><span class="header-section-number">4.3.2</span> Model evaluation</a></li>
+  <li><a href="#training-and-evaluation" id="toc-training-and-evaluation" class="nav-link" data-scroll-target="#training-and-evaluation"><span class="header-section-number">4.3.3</span> Training and evaluation</a></li>
   </ul></li>
-  <li><a href="#training-and-evaluation" id="toc-training-and-evaluation" class="nav-link" data-scroll-target="#training-and-evaluation"><span class="header-section-number">4.4</span> Training and evaluation</a></li>
   </ul>
 </nav>
     </div>
@@ -227,8 +228,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Example: Developing a model to identify specific DNA motifs bound by an arbitrary transcription factor. The model predicts whether a given transcription factor binds to an input DNA sequence (output: 1) or not (output: 0).”</li>
 </ul>
 </section>
-<section id="data" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="data"><span class="header-section-number">4.2</span> Data</h2>
+<section id="data-preparation" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="data-preparation"><span class="header-section-number">4.2</span> Data preparation</h2>
 <ul>
 <li><p>To train a deep learning model, labeled data is required (though not always necessary in modern self-supervised learning approaches).</p></li>
 <li><p>In sequence analysis, DNA sequences paired with their corresponding phenotypes can serve as labeled data (genotype-phenotype paired data).</p>
@@ -236,13 +237,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>For example, to train a deep learning model to predict DNA sequences bound by a specific transcription factor, you would need a dataset containing transcription factor sequence data along with labels indicating whether or not the transcription factor binds to a given DNA sequence (True or False).</li>
 </ul></li>
 <li><p>Generally, data for statistical analysis is represented as a 2D array, with rows corresponding to samples and columns to variables. In deep learning, data is represented in the same way. The number of samples required depends on the complexity of the model, but typically, at least thousands of samples are needed. Using tens of thousands or more samples is recommended for optimal results.</p></li>
-<li><p>A dataset collected for deep learning is divided into training and test datasets. Sometimes, the training dataset is further split into training and validation datasets for model development and performance evaluation.</p></li>
-</ul>
-<section id="one-hot-encoding" class="level3" data-number="4.2.1">
-<h3 data-number="4.2.1" class="anchored" data-anchor-id="one-hot-encoding"><span class="header-section-number">4.2.1</span> One-hot encoding</h3>
+<li><p>A dataset collected for deep learning is typically divided into at least two distinct parts: a training dataset and a test dataset.</p>
 <ul>
-<li><p>For deep learning, data must be represented numerically in a format that machines can process.</p></li>
-<li><p>One-hot encoding is one of the most widely used methods in deep learning.</p></li>
+<li>The <strong>training dataset</strong> is used to fit the model, meaning the model “learns” from this data by adjusting its internal parameters to minimize prediction errors.</li>
+<li>The <strong>test dataset</strong> is kept completely separate from the training data and is only used after model training is complete. This provides an unbiased evaluation of the model’s generalization performance on new, unseen data.</li>
+</ul></li>
+<li><p>Frequently, the training dataset is further split into a <strong>training subset</strong> and a <strong>validation subset</strong>.</p>
+<ul>
+<li>The <strong>validation dataset</strong> is used during model development to tune hyperparameters (such as learning rate, batch size, number of layers, etc.) and to monitor for overfitting. Overfitting occurs when a model performs well on the training data but poorly on unseen data.</li>
+<li>By evaluating the model on the validation set after each training epoch (cycle through the dataset), you can observe if the model is starting to memorize the training data instead of learning general patterns.</li>
+<li>This three-way split (train, validation, test) helps ensure that model evaluation is realistic and that model selection and hyperparameter tuning do not inadvertently use information from the test set.</li>
+</ul></li>
+<li><p>In practice, a common approach is to allocate 60–80% of the dataset to training, 10–20% to validation, and the remaining 10–20% to testing. The exact proportions can vary depending on dataset size and the specific application.</p></li>
+</ul>
+<section id="encoding-and-embedding-in-deep-learning" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="encoding-and-embedding-in-deep-learning"><span class="header-section-number">4.2.1</span> Encoding and Embedding in Deep Learning</h3>
+<p>In deep learning, raw data must first be converted to numeric form before being input into a model. Two foundational concepts for preparing such data are <strong>encoding</strong> and <strong>embedding</strong>.</p>
+<section id="encoding" class="level4" data-number="4.2.1.1">
+<h4 data-number="4.2.1.1" class="anchored" data-anchor-id="encoding"><span class="header-section-number">4.2.1.1</span> 1. Encoding</h4>
+<p>Encoding refers to deterministic, often simple, transformation of categorical variables or characters into numeric representations. The most common example in sequence analysis is <strong>one-hot encoding</strong>.</p>
+<ul>
+<li>For DNA, each nucleotide (A, C, G, T) is represented by a unique binary vector. For example:
+<ul>
+<li>‘A’ → [1, 0, 0, 0]</li>
+<li>‘C’ → [0, 1, 0, 0]</li>
+<li>‘G’ → [0, 0, 1, 0]</li>
+<li>‘T’ → [0, 0, 0, 1]</li>
+</ul></li>
+<li>For longer sequences, each position becomes a row in a matrix, where each row is the one-hot vector for that nucleotide.</li>
+<li>While this method retains all sequence information and provides a simple representation for models, it generates sparse (mostly zero) data, which can be inefficient in terms of memory and computation.</li>
+</ul>
+</section>
+<section id="embedding" class="level4" data-number="4.2.1.2">
+<h4 data-number="4.2.1.2" class="anchored" data-anchor-id="embedding"><span class="header-section-number">4.2.1.2</span> 2. Embedding</h4>
+<p>Embedding is a learned, dense representation that maps each category or sequence element into a continuous vector space. Instead of representing ‘A’, ‘C’, ‘G’, ‘T’ as a long vector with mostly zeros, each symbol is mapped to a small, dense vector of real values (for example, 4-dimensional or 16-dimensional vectors).</p>
+<p>Protein language models are a prominent example of models that leverage embedding representations. In these models, each amino acid in a protein sequence is mapped (via an embedding layer) to a dense vector space, just as words or nucleotides can be in natural language processing or genomics tasks. These learned embeddings allow the model to capture useful biochemical, evolutionary, or functional properties of amino acids in context. Protein language models illustrate how learned embeddings can provide powerful and meaningful representations of biological sequences for downstream predictive tasks.</p>
+<ul>
+<li><p><strong>Learned Embedding Layers:</strong> In deep learning architectures (such as in NLP or biological sequence models), an embedding layer can be trained so that the representation of each category captures meaning from the data and the task.</p></li>
+<li><p><strong>Advantages:</strong></p>
+<ul>
+<li>Embeddings can capture relationships and similarities (e.g., two similar DNA motifs might have similar embeddings).</li>
+<li>Reduces the dimensionality of the data, as compared to one-hot encoding.</li>
+<li>Typically leads to better learning and generalization for complex tasks.</li>
+</ul></li>
+<li><p>In deep learning frameworks (like PyTorch or TensorFlow), the embedding layer is often implemented as a lookup table that maps input indices to dense vectors, and these vectors are updated during training.</p></li>
+<li><p>In practice, for many sequence modeling tasks in deep learning, both approaches may be used: one-hot encoding as a starting point, or learned embeddings for more sophisticated models.</p></li>
+</ul>
+</section>
+</section>
+<section id="one-hot-encoding-with-dna-sequences" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="one-hot-encoding-with-dna-sequences"><span class="header-section-number">4.2.2</span> One-hot encoding with DNA sequences</h3>
+<ul>
 <li><p>For DNA sequences with four types of nucleotides, encoding can be done as follows:</p>
 <ul>
 <li>“A” → [1, 0, 0, 0]<br>
@@ -254,99 +299,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>“C” → [0, 1, 0, 0]</li>
 </ul></li>
 </ul>
-<div id="cell-4" class="cell" data-executioninfo="{&quot;elapsed&quot;:364,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718611149169,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="ba81a254-f3b1-4363-a80b-6fe80bd66b07" data-execution_count="11">
+<div id="cell-5" class="cell" data-executioninfo="{&quot;elapsed&quot;:364,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718611149169,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="ba81a254-f3b1-4363-a80b-6fe80bd66b07" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>my_string<span class="op">=</span><span class="st">"ATACAA"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>my_string<span class="op">=</span><span class="st">"ATACAAC"</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>my_array<span class="op">=</span>np.array(<span class="bu">list</span>(my_string))</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(my_array)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(my_array)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(my_array)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>['A' 'T' 'A' 'C' 'A' 'A']</code></pre>
+<pre><code>['A' 'T' 'A' 'C' 'A' 'A' 'C']</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>numpy.ndarray</code></pre>
 </div>
 </div>
-<div id="cell-5" class="cell" data-executioninfo="{&quot;elapsed&quot;:620,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718590631032,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="9bca6e54-ca39-4ab6-bfc7-71c6e06850cd" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(my_string)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="22">
-<pre><code>['A', 'T', 'A', 'C', 'A', 'A']</code></pre>
+<div id="cell-6" class="cell" data-executioninfo="{&quot;elapsed&quot;:620,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718590631032,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="9bca6e54-ca39-4ab6-bfc7-71c6e06850cd" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">list</span>(my_string))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(<span class="bu">list</span>(my_string))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['A', 'T', 'A', 'C', 'A', 'A', 'C']</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>list</code></pre>
 </div>
 </div>
-<div id="cell-6" class="cell" data-executioninfo="{&quot;elapsed&quot;:477,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718612057122,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="d6631d4c-97df-49fc-f73f-8782082280b5" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.zeros((<span class="dv">7</span>,<span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
-<pre><code>array([[0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.],
-       [0., 0., 0., 0., 0.]])</code></pre>
-</div>
-</div>
-<div id="cell-7" class="cell" data-executioninfo="{&quot;elapsed&quot;:627,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718612507345,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="ef64187d-d85b-41ba-e89d-08eeb191ad11" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>box <span class="op">=</span> np.zeros((<span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">5</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(box)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>box</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
-<pre><code>array([[[0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.]],
-
-       [[0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.]],
-
-       [[0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.],
-        [0., 0., 0., 0., 0.]]])</code></pre>
-</div>
-</div>
-<div id="cell-8" class="cell" data-executioninfo="{&quot;elapsed&quot;:644,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718613208155,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="c7c8132e-a663-4d72-92cc-99c1c35daae9" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>onehot_encode <span class="op">=</span> np.zeros((<span class="bu">len</span>(my_array),<span class="dv">4</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>base_dict <span class="op">=</span> {<span class="st">"A"</span>:<span class="dv">0</span>, <span class="st">"C"</span>:<span class="dv">1</span>, <span class="st">"G"</span>:<span class="dv">2</span>, <span class="st">"T"</span>:<span class="dv">3</span>}</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(my_array)):</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    onehot_encode[i, base_dict[my_array[i]]] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-7" class="cell" data-executioninfo="{&quot;elapsed&quot;:644,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718613208155,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="c7c8132e-a663-4d72-92cc-99c1c35daae9" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>onehot_encode <span class="op">=</span> np.zeros((<span class="bu">len</span>(my_array),<span class="dv">4</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>base_dict <span class="op">=</span> {<span class="st">"A"</span>:<span class="dv">0</span>, <span class="st">"C"</span>:<span class="dv">1</span>, <span class="st">"G"</span>:<span class="dv">2</span>, <span class="st">"T"</span>:<span class="dv">3</span>}</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(my_array)):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    onehot_encode[i, base_dict[my_array[i]]] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1 0 0 0]
  [0 0 0 1]
  [1 0 0 0]
  [0 1 0 0]
  [1 0 0 0]
- [1 0 0 0]]
-(6, 4)</code></pre>
+ [1 0 0 0]
+ [0 1 0 0]]
+(7, 4)</code></pre>
 </div>
 </div>
 </section>
-<section id="set-sequence-motif-for-simulation" class="level3" data-number="4.2.2">
-<h3 data-number="4.2.2" class="anchored" data-anchor-id="set-sequence-motif-for-simulation"><span class="header-section-number">4.2.2</span> Set sequence motif for simulation</h3>
+<section id="sequence-motifs-for-motif-search-in-one-hot-encoded-dna" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="sequence-motifs-for-motif-search-in-one-hot-encoded-dna"><span class="header-section-number">4.2.3</span> Sequence motifs for motif search in one-hot encoded DNA</h3>
 <ul>
-<li>Understanding the concepts of PFM (Position Frequency Matrix) and PWM (Position Weight Matrix) is essential.</li>
-<li>Assuming an alignment of several sequences, the PFM represents the frequency of each nucleotide (A, T, G, C) at specific positions in the sequences, while the PWM represents the proportion of each nucleotide at those positions.</li>
+<li>Understanding the concepts of the Position Frequency Matrix (PFM) and Position Weight Matrix (PWM) is fundamental for motif analysis in DNA sequence data.</li>
+<li>The PFM is generated from a multiple-sequence alignment and represents, for each position in the motif, the count of each nucleotide (A, C, G, T) observed among all sequences.</li>
+<li>The PWM is derived from the PFM by converting these counts into probabilities (or log-probabilities), often with the addition of pseudocounts to avoid zeros. The PWM reflects the relative frequency or likelihood of each nucleotide appearing at each position in the motif.</li>
+<li>These matrices are widely used in bioinformatics for identifying and scoring motif matches in DNA sequences.</li>
+<li>We demonstrate how this PWM can be used to find a target motif within the one-hot encoded data we created.</li>
 </ul>
-<div id="cell-10" class="cell" data-executioninfo="{&quot;elapsed&quot;:532,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718614750161,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="449e3397-7aed-4272-8737-9896233f5e45" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> Bio <span class="im">import</span> motifs</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> Bio.Seq <span class="im">import</span> Seq</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>instances <span class="op">=</span> [Seq(<span class="st">"TACAA"</span>), Seq(<span class="st">"TACGA"</span>), Seq(<span class="st">"TACAA"</span>)]</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> motifs.create(instances)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>pfm <span class="op">=</span> m.counts</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pfm)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>pwm <span class="op">=</span> m.counts.normalize(pseudocounts<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (pwm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-9" class="cell" data-executioninfo="{&quot;elapsed&quot;:532,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718614750161,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="449e3397-7aed-4272-8737-9896233f5e45" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> Bio <span class="im">import</span> motifs</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> Bio.Seq <span class="im">import</span> Seq</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>instances <span class="op">=</span> [Seq(<span class="st">"TACAA"</span>), Seq(<span class="st">"TACGA"</span>), Seq(<span class="st">"TACAA"</span>)]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> motifs.create(instances)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>pfm <span class="op">=</span> m.counts</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pfm)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>pwm <span class="op">=</span> m.counts.normalize(pseudocounts<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (pwm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        0      1      2      3      4
 A:   0.00   3.00   0.00   2.00   3.00
@@ -363,10 +378,9 @@ T:   0.70   0.10   0.10   0.10   0.10
 </div>
 </div>
 <ul>
-<li>Pseudocounts are used in calculations to avoid division by NULL or zero.</li>
-<li>The PWM (Position Weight Matrix) of a specific sequence motif can be used to search for the motif’s location in a new sequence provided in one-hot encoding format.</li>
-<li>Using a sliding window approach, the motif can be scanned from the beginning to the end of the sequence to identify its presence.</li>
-<li>The following demonstrates how to detect the presence of a given PWM motif (assuming a binary 0 and 1 representation) in a sequence.</li>
+<li>Pseudocounts prevent divisions by zero during normalization.</li>
+<li>Using a sliding window, you can scan the sequence from start to end to detect motif occurrences.</li>
+<li>The following example illustrates detecting a PWM motif in a sequence represented with binary one-hot encoding.</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -375,140 +389,265 @@ T:   0.70   0.10   0.10   0.10   0.10
 </figure>
 </div>
 <ul>
-<li><p>If there is a ‘5’ in the length-3 array as shown above, it indicates that the target sequence contains a sequence matching the motif.</p></li>
-<li><p>To search for the presence of the PWM motif in the sequence “ATACAA,” a sliding window of length 5 can be used to divide the sequence into two sub-sequences: “ATACA” and “TACAA.”</p>
+<li><p>If a value of 5 appears in the length-3 array above, it indicates that the target sequence contains a substring matching the motif.</p></li>
+<li><p>To test for the presence of the PWM motif in the sequence “ATACAAC,” use a length-5 sliding window to produce three subsequences: “ATACA”, “TACAA”, and “ACAAC”</p>
 <ul>
-<li>By converting these two sub-sequences into one-hot encoding and multiplying their elements with the corresponding elements of the PWM, only the PWM values at the non-zero positions of the one-hot encoding remain.</li>
-<li>To quantify how similar a given sequence is to the motif: 1. Multiply all non-zero values from the PWM. 2. Take the logarithm of the result.</li>
-<li>The resulting scalar value indicates the similarity between the sequence and the motif. Theoretically, a value of 0 implies an identical sequence match to the motif.</li>
+<li>Convert each subsequence to one-hot encoding and multiply element-wise with the PWM; only PWM entries at one-hot nonzero positions remain.</li>
+<li>To quantify similarity to the motif: 1) sum PWM values per position retained by one-hot, 2) take the product across positions, and 3) take the logarithm of that product.</li>
+<li>The resulting scalar is a similarity score. In this setup, a score of 0 represents an exact match to the motif.</li>
 </ul></li>
 </ul>
-<div id="cell-15" class="cell" data-executioninfo="{&quot;elapsed&quot;:400,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718615793292,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="b174a1d2-8526-44f7-d48a-e536955392b6" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pwm_arr <span class="op">=</span> np.array(<span class="bu">list</span>(pwm.values())).transpose()</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pwm_arr.shape)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode.shape)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode[<span class="dv">0</span>:<span class="dv">5</span>,].shape)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode[<span class="dv">1</span>:<span class="dv">6</span>,].shape)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>s1 <span class="op">=</span> np.multiply(onehot_encode[<span class="dv">0</span>:<span class="dv">5</span>,], pwm_arr)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>s2 <span class="op">=</span> np.multiply(onehot_encode[<span class="dv">1</span>:<span class="dv">6</span>,], pwm_arr)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(s1)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(s2)</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">sum</span>(s1, axis<span class="op">=</span><span class="dv">1</span>))</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.prod(np.<span class="bu">sum</span>(s1, axis<span class="op">=</span><span class="dv">1</span>)))</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.log(np.prod(np.<span class="bu">sum</span>(s1, axis<span class="op">=</span><span class="dv">1</span>)))) <span class="co">#s1 score</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.log(np.prod(np.<span class="bu">sum</span>(s2, axis<span class="op">=</span><span class="dv">1</span>)))) <span class="co">#s2 score</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-14" class="cell" data-executioninfo="{&quot;elapsed&quot;:400,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718615793292,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="b174a1d2-8526-44f7-d48a-e536955392b6" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pwm_arr <span class="op">=</span> np.array(<span class="bu">list</span>(pwm.values())).transpose()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pwm_arr.shape)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode.shape)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode[<span class="dv">0</span>:<span class="dv">5</span>,].shape)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode[<span class="dv">1</span>:<span class="dv">6</span>,].shape)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode[<span class="dv">2</span>:<span class="dv">7</span>,].shape)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>s1 <span class="op">=</span> np.multiply(onehot_encode[<span class="dv">0</span>:<span class="dv">5</span>,], pwm_arr)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>s2 <span class="op">=</span> np.multiply(onehot_encode[<span class="dv">1</span>:<span class="dv">6</span>,], pwm_arr)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>s3 <span class="op">=</span> np.multiply(onehot_encode[<span class="dv">2</span>:<span class="dv">7</span>,], pwm_arr)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">s1:"</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(s1)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s1 sum: "</span>)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">sum</span>(s1, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s1 prod: "</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.prod(np.<span class="bu">sum</span>(s1, axis<span class="op">=</span><span class="dv">1</span>)))</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s1 log: "</span>)</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.log(np.prod(np.<span class="bu">sum</span>(s1, axis<span class="op">=</span><span class="dv">1</span>)))) <span class="co">#s1 score</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">s2:"</span>)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(s2)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s2 sum: "</span>)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">sum</span>(s2, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s2 prod: "</span>)</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.prod(np.<span class="bu">sum</span>(s2, axis<span class="op">=</span><span class="dv">1</span>)))</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s2 log: "</span>)</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.log(np.prod(np.<span class="bu">sum</span>(s2, axis<span class="op">=</span><span class="dv">1</span>)))) <span class="co">#s1 score</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">s3:"</span>)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(s3)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s3 sum: "</span>)</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">sum</span>(s3, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s3 prod: "</span>)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.prod(np.<span class="bu">sum</span>(s3, axis<span class="op">=</span><span class="dv">1</span>)))</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"s3 log: "</span>)</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.log(np.prod(np.<span class="bu">sum</span>(s3, axis<span class="op">=</span><span class="dv">1</span>)))) <span class="co">#s1 score</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(5, 4)
-(6, 4)
+(7, 4)
 (5, 4)
 (5, 4)
+(5, 4)
+
+s1:
 [[0.1 0.  0.  0. ]
  [0.  0.  0.  0.1]
  [0.1 0.  0.  0. ]
  [0.  0.1 0.  0. ]
  [0.7 0.  0.  0. ]]
+s1 sum: 
+[0.1 0.1 0.1 0.1 0.7]
+s1 prod: 
+7.000000000000002e-05
+s1 log: 
+-9.567015315914915
+
+s2:
 [[0.  0.  0.  0.7]
  [0.7 0.  0.  0. ]
  [0.  0.7 0.  0. ]
  [0.5 0.  0.  0. ]
  [0.7 0.  0.  0. ]]
-[0.1 0.1 0.1 0.1 0.7]
-7.000000000000002e-05
--9.567015315914915
--2.119846956314875</code></pre>
+s2 sum: 
+[0.7 0.7 0.7 0.5 0.7]
+s2 prod: 
+0.12004999999999996
+s2 log: 
+-2.119846956314875
+
+s3:
+[[0.1 0.  0.  0. ]
+ [0.  0.1 0.  0. ]
+ [0.1 0.  0.  0. ]
+ [0.5 0.  0.  0. ]
+ [0.  0.1 0.  0. ]]
+s3 sum: 
+[0.1 0.1 0.1 0.5 0.1]
+s3 prod: 
+5.0000000000000016e-05
+s3 log: 
+-9.903487552536127</code></pre>
 </div>
 </div>
 <ul>
-<li>Deep learning styled array</li>
+<li>numpy library 활용</li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/deeplearning_dim.png" class="img-fluid figure-img"></p>
-<figcaption>alt text</figcaption>
-</figure>
+<div id="cell-16" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy.lib.stride_tricks <span class="im">import</span> sliding_window_view</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># PWM과 원-핫 인코딩 준비</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>pwm_arr <span class="op">=</span> np.array(<span class="bu">list</span>(pwm.values())).transpose()  <span class="co"># (motif_len, 4) = (5, 4)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pwm_arr.shape:"</span>, pwm_arr.shape)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> pwm_arr.shape[<span class="dv">0</span>] <span class="co"># M=5</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>L, C <span class="op">=</span> onehot_encode.shape</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"onehot_encode.shape:"</span>, onehot_encode.shape)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 모든 (num_windows, M, 4) 윈도우 생성, squeeze(1) 로 1차원 축 제거 </span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>windows <span class="op">=</span> sliding_window_view(onehot_encode, window_shape<span class="op">=</span>(M, <span class="dv">4</span>)).squeeze(<span class="dv">1</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"windows.shape:"</span>, windows.shape)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(windows[<span class="dv">0</span>])</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>poswise_sum <span class="op">=</span> (windows <span class="op">*</span> pwm_arr).<span class="bu">sum</span>(axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"poswise_sum.shape:"</span>, poswise_sum.shape)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(poswise_sum)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 위치별 합의 곱 -&gt; (num_windows,)</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>prod_scores <span class="op">=</span> np.prod(poswise_sum, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>log_scores <span class="op">=</span> np.log(prod_scores)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"num_windows:"</span>, log_scores.shape[<span class="dv">0</span>])</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">log scores (all windows):"</span>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(log_scores)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 기존 s1/s2/s3 로그 점수와 동일한지 확인용 출력</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">min</span>(<span class="dv">3</span>, log_scores.shape[<span class="dv">0</span>])):</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"s</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> log: "</span>, log_scores[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>pwm_arr.shape: (5, 4)
+onehot_encode.shape: (7, 4)
+windows.shape: (3, 5, 4)
+[[1 0 0 0]
+ [0 0 0 1]
+ [1 0 0 0]
+ [0 1 0 0]
+ [1 0 0 0]]
+poswise_sum.shape: (3, 5)
+[[0.1 0.1 0.1 0.1 0.7]
+ [0.7 0.7 0.7 0.5 0.7]
+ [0.1 0.1 0.1 0.5 0.1]]
+num_windows: 3
+
+log scores (all windows):
+[-9.56701532 -2.11984696 -9.90348755]
+s1 log:  -9.567015315914915
+s2 log:  -2.119846956314875
+s3 log:  -9.903487552536127</code></pre>
+</div>
 </div>
 </section>
-<section id="simulation-data-generation" class="level3" data-number="4.2.3">
-<h3 data-number="4.2.3" class="anchored" data-anchor-id="simulation-data-generation"><span class="header-section-number">4.2.3</span> Simulation data generation</h3>
-<p>Generate 1,000 simulated positive sequences by embedding a motif in the middle of the sequences, and 1,000 negative sequences with random DNA sequences.</p>
-<div id="cell-20" class="cell" data-executioninfo="{&quot;elapsed&quot;:551,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616329999,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="5308cbe2-4126-4bbe-fb35-fced89858523" data-execution_count="4">
+<section id="simulated-data-generation" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="simulated-data-generation"><span class="header-section-number">4.2.4</span> Simulated data generation</h3>
+<ul>
+<li>Generate total sequence length 20bp, motif length 6bp, and 7bp before and after</li>
+<li>Generate 1,000 simulated positive sequences by embedding a motif in the middle of the sequences, and 1,000 negative sequences with random DNA sequences.</li>
+</ul>
+<div id="cell-19" class="cell" data-executioninfo="{&quot;elapsed&quot;:551,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616329999,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="5308cbe2-4126-4bbe-fb35-fced89858523" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>seq_length <span class="op">=</span> <span class="dv">20</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>num_sample <span class="op">=</span> <span class="dv">1000</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#motif CCGGAA</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>motif_pwm <span class="op">=</span> np.array([[<span class="fl">10.41</span>, <span class="fl">22.86</span>, <span class="fl">1.92</span>, <span class="fl">1.55</span>, <span class="fl">98.60</span>, <span class="fl">86.66</span>],</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            [<span class="fl">68.20</span>, <span class="fl">65.25</span>, <span class="fl">0.50</span>, <span class="fl">0.35</span>, <span class="fl">0.25</span>, <span class="fl">2.57</span>],</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>            [<span class="fl">17.27</span>, <span class="fl">8.30</span>, <span class="fl">94.77</span>, <span class="fl">97.32</span>, <span class="fl">0.87</span>, <span class="fl">0.00</span>],</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>            [<span class="fl">4.13</span>, <span class="fl">3.59</span>, <span class="fl">2.81</span>, <span class="fl">0.78</span>, <span class="fl">0.28</span>, <span class="fl">10.77</span>]])</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>pwm <span class="op">=</span> np.hstack([np.ones((<span class="dv">4</span>, <span class="dv">7</span>)), motif_pwm, np.ones((<span class="dv">4</span>, <span class="dv">7</span>))])</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>pos <span class="op">=</span> np.array([np.random.choice( [<span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'G'</span>, <span class="st">'T'</span>], num_sample,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                                  p<span class="op">=</span>pwm[:,i]<span class="op">/</span><span class="bu">sum</span>(pwm[:,i])) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(seq_length)]).transpose()</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>neg <span class="op">=</span> np.array([np.random.choice( [<span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'G'</span>, <span class="st">'T'</span>], num_sample,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                                  p<span class="op">=</span>np.array([<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>])<span class="op">/</span><span class="dv">4</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(seq_length)]).transpose()</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pos.shape)</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>display([<span class="st">''</span>.join(x) <span class="cf">for</span> x <span class="kw">in</span> pos[<span class="dv">1</span>:<span class="dv">5</span>,]])</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>display([<span class="st">''</span>.join(x) <span class="cf">for</span> x <span class="kw">in</span> neg[<span class="dv">1</span>:<span class="dv">5</span>,]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># total seq length = 20, motif length = 6 in the middle, 7bp before and after</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>motif_pwm <span class="op">=</span> np.array([[<span class="fl">10.41</span>, <span class="fl">22.86</span>, <span class="fl">1.92</span>, <span class="fl">1.55</span>, <span class="fl">98.60</span>, <span class="fl">86.66</span>],</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>            [<span class="fl">68.20</span>, <span class="fl">65.25</span>, <span class="fl">0.50</span>, <span class="fl">0.35</span>, <span class="fl">0.25</span>, <span class="fl">2.57</span>],</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>            [<span class="fl">17.27</span>, <span class="fl">8.30</span>, <span class="fl">94.77</span>, <span class="fl">97.32</span>, <span class="fl">0.87</span>, <span class="fl">0.00</span>],</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>            [<span class="fl">4.13</span>, <span class="fl">3.59</span>, <span class="fl">2.81</span>, <span class="fl">0.78</span>, <span class="fl">0.28</span>, <span class="fl">10.77</span>]])</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(motif_pwm.shape)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>pwm <span class="op">=</span> np.hstack([np.ones((<span class="dv">4</span>, <span class="dv">7</span>)), motif_pwm, np.ones((<span class="dv">4</span>, <span class="dv">7</span>))])</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>pos <span class="op">=</span> np.array([np.random.choice( [<span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'G'</span>, <span class="st">'T'</span>], num_sample,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                                  p<span class="op">=</span>pwm[:,i]<span class="op">/</span><span class="bu">sum</span>(pwm[:,i])) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(seq_length)]).transpose()</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>neg <span class="op">=</span> np.array([np.random.choice( [<span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'G'</span>, <span class="st">'T'</span>], num_sample,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                                  p<span class="op">=</span>np.array([<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>])<span class="op">/</span><span class="dv">4</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(seq_length)]).transpose()</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pos.shape)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>display([<span class="st">''</span>.join(x) <span class="cf">for</span> x <span class="kw">in</span> pos[<span class="dv">1</span>:<span class="dv">5</span>,]])</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>display([<span class="st">''</span>.join(x) <span class="cf">for</span> x <span class="kw">in</span> neg[<span class="dv">1</span>:<span class="dv">5</span>,]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(1000, 20)
+<pre><code>(4, 6)
+(1000, 20)
 </code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<pre><code>['GGATTAAACGGAAACTATTT',
- 'AAGACTGCCGGATGGGCTCG',
- 'CCCGAAGGCGGAAACAATCT',
- 'ATGGAAGCGGGAAATATTCT']</code></pre>
+<pre><code>['TATAAATCAGGAATTTTTTG',
+ 'TGAATTTCAGGAAAGTGACG',
+ 'GAACCTCCCGAAACAGGGGT',
+ 'CGAGCGTACGGAAGATACAT']</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<pre><code>['CTACCCTTACTCGCAGGGAA',
- 'ACTCACTAATTGGATTGAGA',
- 'AGGTACCTCGCGGCATCTGG',
- 'GGTATCTACGTGAAGAAGGG']</code></pre>
+<pre><code>['TGACGATGCTACACCTCTGG',
+ 'CAACATCCTTACTAATTGTC',
+ 'ACCACGAAAACGCTTACGCC',
+ 'AGTGGACTGAACGGATGTTA']</code></pre>
 </div>
 </div>
 </section>
-<section id="dna-data-preprocessing" class="level3" data-number="4.2.4">
-<h3 data-number="4.2.4" class="anchored" data-anchor-id="dna-data-preprocessing"><span class="header-section-number">4.2.4</span> DNA data preprocessing</h3>
-<div id="cell-22" class="cell" data-executioninfo="{&quot;elapsed&quot;:571,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616340829,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="1b21955b-952e-492e-ac35-2005af2426fa" data-execution_count="3">
+<section id="dna-data-preprocessing" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="dna-data-preprocessing"><span class="header-section-number">4.2.5</span> DNA data preprocessing</h3>
+<div id="cell-21" class="cell" data-executioninfo="{&quot;elapsed&quot;:571,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616340829,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="1b21955b-952e-492e-ac35-2005af2426fa" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>base_dict <span class="op">=</span> {<span class="st">'A'</span>:<span class="dv">0</span>, <span class="st">'C'</span>:<span class="dv">1</span>, <span class="st">'G'</span>:<span class="dv">2</span>, <span class="st">'T'</span>:<span class="dv">3</span>}</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># response variable for pos</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># response variable for positive</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>onehot_encode_pos <span class="op">=</span> np.zeros((num_sample, seq_length, <span class="dv">4</span>))</span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>onehot_encode_pos_label <span class="op">=</span> np.zeros((num_sample, <span class="dv">2</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>onehot_encode_pos_label[:,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># print(onehot_encode_pos_label)</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co"># response variable for pos</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>onehot_encode_neg <span class="op">=</span> np.zeros((num_sample, seq_length, <span class="dv">4</span>))</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>onehot_encode_neg_label <span class="op">=</span> np.zeros((num_sample, <span class="dv">2</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>onehot_encode_neg_label[:,<span class="dv">1</span>] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co"># print(onehot_encode_neg_label)</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co"># convert sequence to onehot</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_sample):</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(seq_length):</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        onehot_encode_pos[i,j,base_dict[pos[i,j]]] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        onehot_encode_neg[i,j,base_dict[neg[i,j]]] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co"># concatenation</span></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.vstack((onehot_encode_pos, onehot_encode_neg))</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.vstack((onehot_encode_pos_label, onehot_encode_neg_label))</span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X.shape, y.shape)</span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="co"># (2000, 20, 4) (2000, 2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode_pos.shape)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode_pos_label.shape)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode_pos_label[<span class="dv">0</span>:<span class="dv">5</span>,])</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response variable for negative</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>onehot_encode_neg <span class="op">=</span> np.zeros((num_sample, seq_length, <span class="dv">4</span>))</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>onehot_encode_neg_label <span class="op">=</span> np.zeros((num_sample, <span class="dv">2</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>onehot_encode_neg_label[:,<span class="dv">1</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode_neg.shape)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode_neg_label.shape)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(onehot_encode_neg_label[<span class="dv">0</span>:<span class="dv">5</span>,])</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co"># print(onehot_encode_neg_label)</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co"># convert sequence to onehot</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_sample):</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(seq_length):</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        onehot_encode_pos[i,j,base_dict[pos[i,j]]] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>        onehot_encode_neg[i,j,base_dict[neg[i,j]]] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="co"># concatenation</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.vstack((onehot_encode_pos, onehot_encode_neg))</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.vstack((onehot_encode_pos_label, onehot_encode_neg_label))</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X.shape, y.shape)</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="co"># (2000, 20, 4) (2000, 2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(2000, 20, 4) (2000, 2)</code></pre>
+<pre><code>(1000, 20, 4)
+(1000, 2)
+[[1 0]
+ [1 0]
+ [1 0]
+ [1 0]
+ [1 0]]
+(1000, 20, 4)
+(1000, 2)
+[[0 1]
+ [0 1]
+ [0 1]
+ [0 1]
+ [0 1]]
+(2000, 20, 4) (2000, 2)</code></pre>
 </div>
 </div>
 <ul>
-<li>PyTorch Conv1d requires [batch_size, channels, length] so transpose(1,2) excuted</li>
+<li>PyTorch Conv1d expects input shaped as [batch_size, channels, length], so we apply transpose(1, 2).</li>
 </ul>
-<div id="cell-24" class="cell" data-executioninfo="{&quot;elapsed&quot;:548,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616362356,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="0481cce5-7585-4ba5-a715-728681c165a7" data-execution_count="39">
+<div id="cell-23" class="cell" data-executioninfo="{&quot;elapsed&quot;:548,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616362356,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="0481cce5-7585-4ba5-a715-728681c165a7" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> TensorDataset, DataLoader</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
@@ -538,7 +677,7 @@ torch.Size([1600, 4, 20])
 torch.Size([1600, 2])</code></pre>
 </div>
 </div>
-<div id="cell-25" class="cell" data-executioninfo="{&quot;elapsed&quot;:610,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616374501,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="4ba6d7d9-42d0-42ac-e404-39002de8e4a2" data-execution_count="18">
+<div id="cell-24" class="cell" data-executioninfo="{&quot;elapsed&quot;:610,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616374501,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="4ba6d7d9-42d0-42ac-e404-39002de8e4a2" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>X_torch <span class="op">=</span> torch.tensor(X_train, dtype<span class="op">=</span>torch.float32)</span>
@@ -547,15 +686,15 @@ torch.Size([1600, 2])</code></pre>
 <pre><code>torch.Size([1600, 4, 20])</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_2688/3124571761.py:3: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+<pre><code>/tmp/ipykernel_3522/3124571761.py:3: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
   X_torch = torch.tensor(X_train, dtype=torch.float32)</code></pre>
 </div>
 </div>
 </section>
 </section>
-<section id="cnn-model" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="cnn-model"><span class="header-section-number">4.3</span> CNN model</h2>
-<div id="cell-27" class="cell" data-executioninfo="{&quot;elapsed&quot;:391,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616387856,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="8394d97a-bb14-4e7b-c02c-976f8835f870" data-execution_count="40">
+<section id="cnn-model-quick-review" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="cnn-model-quick-review"><span class="header-section-number">4.3</span> CNN model quick review</h2>
+<div id="cell-26" class="cell" data-executioninfo="{&quot;elapsed&quot;:391,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718616387856,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="8394d97a-bb14-4e7b-c02c-976f8835f870" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -618,7 +757,7 @@ Estimated Total Size (MB): 0.05
 </div>
 <section id="training" class="level3" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="training"><span class="header-section-number">4.3.1</span> Training</h3>
-<div id="cell-29" class="cell" data-executioninfo="{&quot;elapsed&quot;:2915,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718617108099,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="96aea657-d7d9-4569-881a-e3c256d7cd94" data-execution_count="20">
+<div id="cell-28" class="cell" data-executioninfo="{&quot;elapsed&quot;:2915,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718617108099,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="96aea657-d7d9-4569-881a-e3c256d7cd94" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 훈련 루프</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>num_epochs <span class="op">=</span> <span class="dv">20</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(num_epochs):</span>
@@ -638,32 +777,32 @@ Estimated Total Size (MB): 0.05
 <span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Epoch [</span><span class="sc">{</span>epoch<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>num_epochs<span class="sc">}</span><span class="ss">], Loss: </span><span class="sc">{</span>loss<span class="sc">.</span>item()<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch [1/20], Loss: 0.5050
-Epoch [2/20], Loss: 0.2472
-Epoch [3/20], Loss: 0.1437
-Epoch [4/20], Loss: 0.0821
-Epoch [5/20], Loss: 0.0966
-Epoch [6/20], Loss: 0.0719
-Epoch [7/20], Loss: 0.0729
-Epoch [8/20], Loss: 0.0387
-Epoch [9/20], Loss: 0.1018
-Epoch [10/20], Loss: 0.1520
-Epoch [11/20], Loss: 0.0712
-Epoch [12/20], Loss: 0.0277
-Epoch [13/20], Loss: 0.0272
-Epoch [14/20], Loss: 0.0318
-Epoch [15/20], Loss: 0.0215
-Epoch [16/20], Loss: 0.0464
-Epoch [17/20], Loss: 0.0975
-Epoch [18/20], Loss: 0.0566
-Epoch [19/20], Loss: 0.0191
-Epoch [20/20], Loss: 0.0516</code></pre>
+<pre><code>Epoch [1/20], Loss: 0.5057
+Epoch [2/20], Loss: 0.2352
+Epoch [3/20], Loss: 0.0656
+Epoch [4/20], Loss: 0.1062
+Epoch [5/20], Loss: 0.0821
+Epoch [6/20], Loss: 0.0870
+Epoch [7/20], Loss: 0.0399
+Epoch [8/20], Loss: 0.0369
+Epoch [9/20], Loss: 0.0173
+Epoch [10/20], Loss: 0.1181
+Epoch [11/20], Loss: 0.0961
+Epoch [12/20], Loss: 0.0265
+Epoch [13/20], Loss: 0.0902
+Epoch [14/20], Loss: 0.0822
+Epoch [15/20], Loss: 0.0355
+Epoch [16/20], Loss: 0.0159
+Epoch [17/20], Loss: 0.0037
+Epoch [18/20], Loss: 0.0736
+Epoch [19/20], Loss: 0.0240
+Epoch [20/20], Loss: 0.0172</code></pre>
 </div>
 </div>
 </section>
 <section id="model-evaluation" class="level3" data-number="4.3.2">
 <h3 data-number="4.3.2" class="anchored" data-anchor-id="model-evaluation"><span class="header-section-number">4.3.2</span> Model evaluation</h3>
-<div id="cell-31" class="cell" data-executioninfo="{&quot;elapsed&quot;:365,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718617327293,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="66c7ede7-5ece-4860-b705-3f3466044a52" data-execution_count="17">
+<div id="cell-30" class="cell" data-executioninfo="{&quot;elapsed&quot;:365,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718617327293,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="66c7ede7-5ece-4860-b705-3f3466044a52" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델 평가</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
@@ -683,14 +822,13 @@ Epoch [20/20], Loss: 0.0516</code></pre>
 <span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Accuracy of the model on the test images: </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> correct <span class="op">/</span> total<span class="sc">}</span><span class="ss"> %'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Accuracy of the model on the test images: 98.5 %</code></pre>
+<pre><code>Accuracy of the model on the test images: 98.0 %</code></pre>
 </div>
 </div>
 </section>
-</section>
-<section id="training-and-evaluation" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="training-and-evaluation"><span class="header-section-number">4.4</span> Training and evaluation</h2>
-<div id="cell-33" class="cell" data-executioninfo="{&quot;elapsed&quot;:25207,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718617527334,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="73928f73-3d07-43b9-dbc9-bcded72386d8" data-execution_count="1">
+<section id="training-and-evaluation" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="training-and-evaluation"><span class="header-section-number">4.3.3</span> Training and evaluation</h3>
+<div id="cell-32" class="cell" data-executioninfo="{&quot;elapsed&quot;:25207,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1718617527334,&quot;user&quot;:{&quot;displayName&quot;:&quot;haseong kim&quot;,&quot;userId&quot;:&quot;15555769759698200025&quot;},&quot;user_tz&quot;:-540}" data-outputid="73928f73-3d07-43b9-dbc9-bcded72386d8" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 저장을 위한 리스트 초기화</span></span>
@@ -755,12 +893,219 @@ Epoch [20/20], Loss: 0.0516</code></pre>
 <span id="cb32-62"><a href="#cb32-62" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
 <span id="cb32-63"><a href="#cb32-63" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-64"><a href="#cb32-64" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>NameError: name 'model' is not defined</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch [1/200], Loss: 0.0309, Accuracy: 98.00%
+Epoch [2/200], Loss: 0.0304, Accuracy: 98.00%
+Epoch [3/200], Loss: 0.0304, Accuracy: 99.00%
+Epoch [4/200], Loss: 0.0317, Accuracy: 97.75%
+Epoch [5/200], Loss: 0.0262, Accuracy: 98.00%
+Epoch [6/200], Loss: 0.0255, Accuracy: 97.75%
+Epoch [7/200], Loss: 0.0255, Accuracy: 99.25%
+Epoch [8/200], Loss: 0.0250, Accuracy: 98.50%
+Epoch [9/200], Loss: 0.0237, Accuracy: 99.25%
+Epoch [10/200], Loss: 0.0254, Accuracy: 99.50%
+Epoch [11/200], Loss: 0.0220, Accuracy: 99.00%
+Epoch [12/200], Loss: 0.0218, Accuracy: 97.75%
+Epoch [13/200], Loss: 0.0197, Accuracy: 98.25%
+Epoch [14/200], Loss: 0.0187, Accuracy: 98.50%
+Epoch [15/200], Loss: 0.0192, Accuracy: 98.25%
+Epoch [16/200], Loss: 0.0172, Accuracy: 97.75%
+Epoch [17/200], Loss: 0.0173, Accuracy: 98.25%
+Epoch [18/200], Loss: 0.0161, Accuracy: 98.50%
+Epoch [19/200], Loss: 0.0185, Accuracy: 97.75%
+Epoch [20/200], Loss: 0.0165, Accuracy: 97.75%
+Epoch [21/200], Loss: 0.0143, Accuracy: 98.25%
+Epoch [22/200], Loss: 0.0122, Accuracy: 98.25%
+Epoch [23/200], Loss: 0.0131, Accuracy: 98.00%
+Epoch [24/200], Loss: 0.0121, Accuracy: 98.00%
+Epoch [25/200], Loss: 0.0105, Accuracy: 98.00%
+Epoch [26/200], Loss: 0.0103, Accuracy: 98.00%
+Epoch [27/200], Loss: 0.0107, Accuracy: 98.50%
+Epoch [28/200], Loss: 0.0090, Accuracy: 98.50%
+Epoch [29/200], Loss: 0.0085, Accuracy: 98.25%
+Epoch [30/200], Loss: 0.0072, Accuracy: 98.00%
+Epoch [31/200], Loss: 0.0071, Accuracy: 98.00%
+Epoch [32/200], Loss: 0.0073, Accuracy: 98.00%
+Epoch [33/200], Loss: 0.0069, Accuracy: 98.00%
+Epoch [34/200], Loss: 0.0060, Accuracy: 98.00%
+Epoch [35/200], Loss: 0.0074, Accuracy: 98.50%
+Epoch [36/200], Loss: 0.0070, Accuracy: 97.75%
+Epoch [37/200], Loss: 0.0063, Accuracy: 98.00%
+Epoch [38/200], Loss: 0.0045, Accuracy: 98.00%
+Epoch [39/200], Loss: 0.0044, Accuracy: 98.00%
+Epoch [40/200], Loss: 0.0041, Accuracy: 98.00%
+Epoch [41/200], Loss: 0.0038, Accuracy: 98.25%
+Epoch [42/200], Loss: 0.0046, Accuracy: 98.00%
+Epoch [43/200], Loss: 0.0042, Accuracy: 98.00%
+Epoch [44/200], Loss: 0.0033, Accuracy: 98.00%
+Epoch [45/200], Loss: 0.0030, Accuracy: 98.00%
+Epoch [46/200], Loss: 0.0029, Accuracy: 98.00%
+Epoch [47/200], Loss: 0.0027, Accuracy: 98.00%
+Epoch [48/200], Loss: 0.0024, Accuracy: 98.00%
+Epoch [49/200], Loss: 0.0024, Accuracy: 98.00%
+Epoch [50/200], Loss: 0.0022, Accuracy: 98.00%
+Epoch [51/200], Loss: 0.0021, Accuracy: 98.00%
+Epoch [52/200], Loss: 0.0021, Accuracy: 98.00%
+Epoch [53/200], Loss: 0.0021, Accuracy: 98.00%
+Epoch [54/200], Loss: 0.0019, Accuracy: 98.00%
+Epoch [55/200], Loss: 0.0018, Accuracy: 98.00%
+Epoch [56/200], Loss: 0.0017, Accuracy: 98.00%
+Epoch [57/200], Loss: 0.0016, Accuracy: 98.00%
+Epoch [58/200], Loss: 0.0017, Accuracy: 98.00%
+Epoch [59/200], Loss: 0.0016, Accuracy: 98.00%
+Epoch [60/200], Loss: 0.0015, Accuracy: 98.00%
+Epoch [61/200], Loss: 0.0013, Accuracy: 98.00%
+Epoch [62/200], Loss: 0.0013, Accuracy: 98.00%
+Epoch [63/200], Loss: 0.0013, Accuracy: 98.00%
+Epoch [64/200], Loss: 0.0011, Accuracy: 98.00%
+Epoch [65/200], Loss: 0.0012, Accuracy: 98.00%
+Epoch [66/200], Loss: 0.0012, Accuracy: 98.00%
+Epoch [67/200], Loss: 0.0011, Accuracy: 98.00%
+Epoch [68/200], Loss: 0.0011, Accuracy: 98.00%
+Epoch [69/200], Loss: 0.0010, Accuracy: 98.00%
+Epoch [70/200], Loss: 0.0009, Accuracy: 98.00%
+Epoch [71/200], Loss: 0.0010, Accuracy: 98.00%
+Epoch [72/200], Loss: 0.0009, Accuracy: 98.00%
+Epoch [73/200], Loss: 0.0009, Accuracy: 98.00%
+Epoch [74/200], Loss: 0.0008, Accuracy: 98.00%
+Epoch [75/200], Loss: 0.0008, Accuracy: 98.00%
+Epoch [76/200], Loss: 0.0008, Accuracy: 98.00%
+Epoch [77/200], Loss: 0.0008, Accuracy: 98.00%
+Epoch [78/200], Loss: 0.0007, Accuracy: 98.00%
+Epoch [79/200], Loss: 0.0007, Accuracy: 98.00%
+Epoch [80/200], Loss: 0.0007, Accuracy: 98.00%
+Epoch [81/200], Loss: 0.0006, Accuracy: 98.00%
+Epoch [82/200], Loss: 0.0006, Accuracy: 98.00%
+Epoch [83/200], Loss: 0.0006, Accuracy: 98.00%
+Epoch [84/200], Loss: 0.0006, Accuracy: 98.00%
+Epoch [85/200], Loss: 0.0005, Accuracy: 98.00%
+Epoch [86/200], Loss: 0.0005, Accuracy: 98.00%
+Epoch [87/200], Loss: 0.0005, Accuracy: 98.25%
+Epoch [88/200], Loss: 0.0005, Accuracy: 98.00%
+Epoch [89/200], Loss: 0.0005, Accuracy: 98.00%
+Epoch [90/200], Loss: 0.0005, Accuracy: 98.00%
+Epoch [91/200], Loss: 0.0005, Accuracy: 98.00%
+Epoch [92/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [93/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [94/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [95/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [96/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [97/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [98/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [99/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [100/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [101/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [102/200], Loss: 0.0004, Accuracy: 98.25%
+Epoch [103/200], Loss: 0.0004, Accuracy: 98.00%
+Epoch [104/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [105/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [106/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [107/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [108/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [109/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [110/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [111/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [112/200], Loss: 0.0003, Accuracy: 98.00%
+Epoch [113/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [114/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [115/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [116/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [117/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [118/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [119/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [120/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [121/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [122/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [123/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [124/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [125/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [126/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [127/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [128/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [129/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [130/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [131/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [132/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [133/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [134/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [135/200], Loss: 0.0002, Accuracy: 98.00%
+Epoch [136/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [137/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [138/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [139/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [140/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [141/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [142/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [143/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [144/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [145/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [146/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [147/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [148/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [149/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [150/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [151/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [152/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [153/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [154/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [155/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [156/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [157/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [158/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [159/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [160/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [161/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [162/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [163/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [164/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [165/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [166/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [167/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [168/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [169/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [170/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [171/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [172/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [173/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [174/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [175/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [176/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [177/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [178/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [179/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [180/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [181/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [182/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [183/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [184/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [185/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [186/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [187/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [188/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [189/200], Loss: 0.0001, Accuracy: 98.00%
+Epoch [190/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [191/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [192/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [193/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [194/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [195/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [196/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [197/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [198/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [199/200], Loss: 0.0000, Accuracy: 98.00%
+Epoch [200/200], Loss: 0.0000, Accuracy: 98.00%</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="day3_cnn_dna_files/figure-html/cell-15-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

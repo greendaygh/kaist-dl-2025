@@ -630,7 +630,7 @@ L = \frac{1}{n} || y - \hat{y} ||^2 =  \frac{1}{n}\sum(y_i-\hat{y}_i)^2
 <h3 data-number="3.3.8" class="anchored" data-anchor-id="backpropagation-and-training"><span class="header-section-number">3.3.8</span> Backpropagation and Training</h3>
 <ul>
 <li>Backpropagation: The process of adjusting weights and biases based on the loss. It uses gradients computed by the chain rule to update these parameters through gradient descent or other optimization algorithms.</li>
-<li>Optimization Algorithm: Techniques like Stochastic Gradient Descent (SGD) or Adam adjust the model parameters to minimize the loss.</li>
+<li>Optimization Algorithm: Techniques like Stochastic Gradient Descent (SGD) or Adaptive Moment Estimation(Adam) adjust the model parameters to minimize the loss.</li>
 </ul>
 <section id="chain-rule" class="level4" data-number="3.3.8.1">
 <h4 data-number="3.3.8.1" class="anchored" data-anchor-id="chain-rule"><span class="header-section-number">3.3.8.1</span> Chain Rule</h4>
@@ -662,7 +662,7 @@ z = f(y)
 <ul>
 <li>Update <span class="math inline">\(w_{11}^{(2)}\)</span> and iteratively compute forward pass and backprop until convergence</li>
 </ul>
-<div id="cell-25" class="cell" data-execution_count="6">
+<div id="cell-25" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Activation functions and their derivatives</span></span>
@@ -772,7 +772,7 @@ torch.optim: Tools for optimization algorithms (e.g., SGD, Adam).<br>
 torchvision: Provides datasets, pre-trained models, and image transformations.</p>
 <p><strong>Tensors</strong></p>
 <p>Tensors are the primary data structures in PyTorch, analogous to NumPy arrays but with added capabilities such as the ability to run on GPUs for faster computation.</p>
-<div id="cell-28" class="cell" data-execution_count="8">
+<div id="cell-28" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
@@ -869,21 +869,21 @@ torchvision: Provides datasets, pre-trained models, and image transformations.</
 <span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
 <span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 0, Loss: 0.2275
-Epoch 100, Loss: 0.2192
-Epoch 200, Loss: 0.2141
-Epoch 300, Loss: 0.2061
-Epoch 400, Loss: 0.1925
-Epoch 500, Loss: 0.1692
-Epoch 600, Loss: 0.1317
-Epoch 700, Loss: 0.0874
-Epoch 800, Loss: 0.0543
-Epoch 900, Loss: 0.0376
+<pre><code>Epoch 0, Loss: 0.3022
+Epoch 100, Loss: 0.2089
+Epoch 200, Loss: 0.1969
+Epoch 300, Loss: 0.1790
+Epoch 400, Loss: 0.1505
+Epoch 500, Loss: 0.1142
+Epoch 600, Loss: 0.0771
+Epoch 700, Loss: 0.0488
+Epoch 800, Loss: 0.0338
+Epoch 900, Loss: 0.0254
 
 Final Predictions:
-tensor([[0.8810],
-        [0.2476],
-        [0.9134]])</code></pre>
+tensor([[0.8830],
+        [0.2090],
+        [0.9515]])</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
