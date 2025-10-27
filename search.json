@@ -164,7 +164,17 @@
     "href": "day4_cnn.html",
     "title": "5  Day4 CNN with details",
     "section": "",
-    "text": "5.1 Overview\nimport os\nimport random\nimport numpy as np\nimport torch\n\ndef set_seed(seed: int = 42):\n    random.seed(seed)\n    np.random.seed(seed)\n    torch.manual_seed(seed)\n    torch.cuda.manual_seed_all(seed)\n    # CUDNN\n    torch.backends.cudnn.deterministic = True\n    torch.backends.cudnn.benchmark = False\n\nset_seed(42)\nprint(\"Seeds are set to 42\")\nConvolutional Neural Networks (CNNs) are a type of deep learning model specifically designed for recognizing patterns and spatial hierarchies in data. While traditionally used in image processing, CNNs are also powerful for tasks involving sequential data, such as DNA sequences, because of their ability to detect local patterns.\nBy the end of this notebook you will be able to: - Understand tensor shapes used in NumPy and PyTorch (3D/4D). - Build a simple 1D CNN to detect DNA motifs. - Reason about stride, padding, pooling, and activations. - Train and evaluate a PyTorch model with basic metrics.\nhttps://nafizshahriar.medium.com/what-is-convolutional-neural-network-cnn-deep-learning-b3921bdd82d5",
+    "text": "5.1 Overview\nimport os\nimport random\nimport numpy as np\nimport torch\n\ndef set_seed(seed: int = 42):\n    random.seed(seed)\n    np.random.seed(seed)\n    torch.manual_seed(seed)\n    torch.cuda.manual_seed_all(seed)\n    # CUDNN\n    torch.backends.cudnn.deterministic = True\n    torch.backends.cudnn.benchmark = False\n\nset_seed(42)\nprint(\"Seeds are set to 42\")\nConvolutional Neural Networks (CNNs) are a type of deep learning model specifically designed for recognizing patterns and spatial hierarchies in data. While traditionally used in image processing, CNNs are also powerful for tasks involving sequential data, such as DNA sequences, because of their ability to detect local patterns.\nhttps://nafizshahriar.medium.com/what-is-convolutional-neural-network-cnn-deep-learning-b3921bdd82d5",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Day4 CNN with details</span>"
+    ]
+  },
+  {
+    "objectID": "day4_cnn.html#overview",
+    "href": "day4_cnn.html#overview",
+    "title": "5  Day4 CNN with details",
+    "section": "",
+    "text": "By the end of this notebook you will be able to:\n\nUnderstand tensor shapes used in NumPy and PyTorch (3D/4D).\nBuild a simple 1D CNN to detect DNA motifs.\nReason about stride, padding, pooling, and activations.\nTrain and evaluate a PyTorch model with basic metrics.",
     "crumbs": [
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Day4 CNN with details</span>"
     ]
