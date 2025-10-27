@@ -506,7 +506,7 @@ Image Shape with Batch Dimension: torch.Size([1, 3, 500, 500])</code></pre>
 <li>In deep learning, attention uses scaled dot products</li>
 </ul></li>
 </ul>
-<p><img src="images/dot3.png" class="img-fluid"></p>
+<p><img src="images/dotproduct.png" class="img-fluid"></p>
 <ul>
 <li><p>Applications in Machine Learning</p>
 <ul>
@@ -515,7 +515,7 @@ Image Shape with Batch Dimension: torch.Size([1, 3, 500, 500])</code></pre>
 <li>Attention Mechanisms: Uses dot products to calculate importance weights between query and key vectors.</li>
 </ul></li>
 </ul>
-<div id="cell-22" class="cell" data-execution_count="50">
+<div id="cell-23" class="cell" data-execution_count="50">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -558,7 +558,7 @@ attention weights sum: 1.0000001192092896</code></pre>
 <li><code>__getitem__</code>: Retrieves a single sample (data and label) by index.</li>
 </ol></li>
 </ul>
-<div id="cell-25" class="cell" data-execution_count="74">
+<div id="cell-26" class="cell" data-execution_count="74">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset, DataLoader</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -615,7 +615,7 @@ Number of samples in dataset: 100</code></pre>
 <li>Pre-fetching can keep GPUs busy by overlapping data loading with computation.</li>
 </ul></li>
 </ul>
-<div id="cell-27" class="cell" data-execution_count="75">
+<div id="cell-28" class="cell" data-execution_count="75">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a DataLoader to handle batching</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>dataloader <span class="op">=</span> DataLoader(dataset, batch_size<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -654,7 +654,7 @@ Labels:
 </section>
 <section id="sequence-example" class="level4" data-number="5.4.0.3">
 <h4 data-number="5.4.0.3" class="anchored" data-anchor-id="sequence-example"><span class="header-section-number">5.4.0.3</span> Sequence example</h4>
-<div id="cell-29" class="cell" data-execution_count="43">
+<div id="cell-30" class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset, DataLoader</span>
@@ -687,7 +687,7 @@ Labels:
 <pre><code>(2000, 20) (2000,)</code></pre>
 </div>
 </div>
-<div id="cell-30" class="cell" data-execution_count="16">
+<div id="cell-31" class="cell" data-execution_count="51">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SequenceDataset(Dataset):</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, sequences, labels):</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
@@ -735,14 +735,14 @@ Labels:
 Sequences Shape: torch.Size([32, 4, 20])
 Labels Shape: torch.Size([32])
 First Sequence (One-Hot):
- tensor([[0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 1., 1., 0., 1., 0., 0.,
+ tensor([[1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 1.,
          0., 0.],
-        [1., 0., 0., 1., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0., 1.,
-         0., 0.],
-        [0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 1., 0.,
+        [0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0., 1., 0., 0.,
          1., 0.],
-        [0., 1., 1., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.,
-         0., 1.]])
+        [0., 1., 0., 0., 1., 0., 1., 0., 0., 1., 1., 0., 0., 1., 0., 0., 1., 0.,
+         0., 1.],
+        [0., 0., 0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.,
+         0., 0.]])
 First Label: tensor(1.)</code></pre>
 </div>
 </div>
@@ -815,7 +815,7 @@ First Label: tensor(1.)</code></pre>
 <p><img src="images/slidingwindow.png" class="img-fluid"></p>
 <p>Output length formula: - L_out = floor((L_in - K + 2P)/S) + 1 - L_out = floor((10 - 3 + 2)/1) + 1 = floor(9) + 1 = 10</p>
 <p>where - in_channels (C_in): number of input feature channels (e.g., 4 for A/C/G/T) - out_channels (C_out): number of filters → number of output channels - kernel_size (K): window length along sequence dimension - stride (S): step size the kernel moves each time - padding (P): zeros added to both ends (controls output length)</p>
-<div id="cell-39" class="cell" data-execution_count="39">
+<div id="cell-40" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -834,7 +834,7 @@ First Label: tensor(1.)</code></pre>
 Output Shape: torch.Size([1, 8, 10])</code></pre>
 </div>
 </div>
-<div id="cell-40" class="cell" data-execution_count="37">
+<div id="cell-41" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -855,7 +855,7 @@ Output Shape: torch.Size([1, 9, 10])</code></pre>
 </div>
 <section id="padding-and-out_channels" class="level5" data-number="5.5.0.2.1">
 <h5 data-number="5.5.0.2.1" class="anchored" data-anchor-id="padding-and-out_channels"><span class="header-section-number">5.5.0.2.1</span> Padding and out_channels</h5>
-<div id="cell-42" class="cell" data-execution_count="38">
+<div id="cell-43" class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -889,7 +889,7 @@ out_channels=8 shape: torch.Size([1, 8, 10])</code></pre>
 </section>
 <section id="numpy-code-example" class="level5" data-number="5.5.0.2.2">
 <h5 data-number="5.5.0.2.2" class="anchored" data-anchor-id="numpy-code-example"><span class="header-section-number">5.5.0.2.2</span> numpy code example</h5>
-<div id="cell-45" class="cell" data-execution_count="21">
+<div id="cell-46" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
@@ -943,7 +943,7 @@ Feature Map Shape (NumPy): (16,)</code></pre>
 <ul>
 <li>Minimal PyTorch example that applies a 1D convolution to a one-hot encoded DNA sequence.</li>
 </ul>
-<div id="cell-47" class="cell" data-execution_count="24">
+<div id="cell-48" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -997,7 +997,7 @@ tensor([[[-0.1840,  0.0791, -0.0492,  0.0319,  0.0319,  0.0165,  0.0533,
 <li>Leaky ReLU : When addressing “dead neurons” in ReLU.</li>
 </ul></li>
 </ul>
-<div id="cell-50" class="cell" data-execution_count="31">
+<div id="cell-51" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -1078,7 +1078,7 @@ tensor([[[0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
 </ul></li>
 </ul>
 <p><img src="images/pooling2.png" class="img-fluid"></p>
-<div id="cell-54" class="cell" data-execution_count="33">
+<div id="cell-55" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1123,7 +1123,7 @@ Output Shape After Pooling: torch.Size([1, 1, 8])</code></pre>
 <li>This is necessary because the subsequent layers (like fully connected or dense layers) expect inputs to be in a flattened format.</li>
 </ul>
 <p><img src="images/flat.png" class="img-fluid"></p>
-<div id="cell-57" class="cell">
+<div id="cell-58" class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1181,7 +1181,7 @@ Output Shape (Final): torch.Size([1, 1])</code></pre>
 <li>Softmax: For multi-class classification.</li>
 </ul></li>
 </ul>
-<div id="cell-59" class="cell">
+<div id="cell-60" class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1245,7 +1245,7 @@ Estimated Total Size (MB): 0.05
 <h2 data-number="5.11" class="anchored" data-anchor-id="complete-code"><span class="header-section-number">5.11</span> Complete code</h2>
 <section id="data" class="level4" data-number="5.11.0.1">
 <h4 data-number="5.11.0.1" class="anchored" data-anchor-id="data"><span class="header-section-number">5.11.0.1</span> Data</h4>
-<div id="cell-61" class="cell" data-execution_count="137">
+<div id="cell-62" class="cell" data-execution_count="137">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset, DataLoader</span>
@@ -1330,7 +1330,7 @@ Test Labels Shape: (400,)</code></pre>
 </section>
 <section id="model-and-training" class="level4" data-number="5.11.0.2">
 <h4 data-number="5.11.0.2" class="anchored" data-anchor-id="model-and-training"><span class="header-section-number">5.11.0.2</span> Model and training</h4>
-<div id="cell-63" class="cell">
+<div id="cell-64" class="cell">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
@@ -1406,7 +1406,7 @@ Epoch 10/10, Loss: 0.0488</code></pre>
 </section>
 <section id="testing" class="level4" data-number="5.11.0.3">
 <h4 data-number="5.11.0.3" class="anchored" data-anchor-id="testing"><span class="header-section-number">5.11.0.3</span> Testing</h4>
-<div id="cell-65" class="cell">
+<div id="cell-66" class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create test dataset and dataloader</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>test_dataset <span class="op">=</span> SequenceDataset(test_data, test_labels)</span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>test_dataloader <span class="op">=</span> DataLoader(test_dataset, batch_size<span class="op">=</span><span class="dv">32</span>, shuffle<span class="op">=</span><span class="va">False</span>)</span>
@@ -1449,7 +1449,7 @@ Epoch 10/10, Loss: 0.0488</code></pre>
 </section>
 <section id="device-for-computation" class="level3" data-number="5.11.1">
 <h3 data-number="5.11.1" class="anchored" data-anchor-id="device-for-computation"><span class="header-section-number">5.11.1</span> Device for computation</h3>
-<div id="cell-67" class="cell" data-execution_count="140">
+<div id="cell-68" class="cell" data-execution_count="140">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if CUDA is available</span></span>
@@ -1473,7 +1473,7 @@ Allocated GPU memory: 8.44 MB
 Cached GPU memory: 22.00 MB</code></pre>
 </div>
 </div>
-<div id="cell-68" class="cell" data-execution_count="141">
+<div id="cell-69" class="cell" data-execution_count="141">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>nvidia<span class="op">-</span>smi</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mon Dec  2 12:58:41 2024       
@@ -1501,7 +1501,7 @@ Cached GPU memory: 22.00 MB</code></pre>
 </section>
 <section id="run-on-gpu" class="level3" data-number="5.11.2">
 <h3 data-number="5.11.2" class="anchored" data-anchor-id="run-on-gpu"><span class="header-section-number">5.11.2</span> Run on GPU</h3>
-<div id="cell-70" class="cell" data-execution_count="144">
+<div id="cell-71" class="cell" data-execution_count="144">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for GPU availability</span></span>
@@ -1551,7 +1551,7 @@ Epoch 4/5, Loss: 0.0703
 Epoch 5/5, Loss: 0.0630</code></pre>
 </div>
 </div>
-<div id="cell-71" class="cell">
+<div id="cell-72" class="cell">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test the model</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()  <span class="co"># Set the model to evaluation mode</span></span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>correct <span class="op">=</span> <span class="dv">0</span></span>
@@ -1578,7 +1578,7 @@ Epoch 5/5, Loss: 0.0630</code></pre>
 <pre><code>Test Accuracy: 96.50%</code></pre>
 </div>
 </div>
-<div id="cell-72" class="cell">
+<div id="cell-73" class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if CUDA is available</span></span>
