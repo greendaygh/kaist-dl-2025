@@ -328,5 +328,15 @@
     "crumbs": [
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Day5 Model Evaluation</span>"
     ]
+  },
+  {
+    "objectID": "day5_model_evaluation.html#f1-score",
+    "href": "day5_model_evaluation.html#f1-score",
+    "title": "6  Day5 Model Evaluation",
+    "section": "6.5 F1-Score",
+    "text": "6.5 F1-Score\n\nThe F1-score is a metric that combines both Precision and Recall into a single value.\n\nIt is the harmonic mean of Precision and Recall, providing a balanced measure when both metrics are important.\n\n\\[\n\\text{F1-score} = 2 \\times \\frac{\\text{Precision} \\times \\text{Recall}}{\\text{Precision} + \\text{Recall}}\n\\]\n\n6.5.1 Good\n\nWhen the dataset is imbalanced, and accuracy alone is misleading.\n\nWhen both false positives and false negatives are important to minimize.\n\nEspecially useful in applications like medical diagnosis, fraud detection, or information retrieval.\n\n\n\n6.5.2 No Good\n\nIt does not differentiate between the cost of false positives and false negatives (both are treated equally).\n\nIf one of Precision or Recall is very low, the F1-score will also be low (since it’s the harmonic mean).\n\nIt might not reflect real-world costs when one type of error is more critical than the other.\n\n\n\n6.5.3 Intuition\n\nPrecision focuses on “how many of the predicted positives are correct.”\n\nRecall focuses on “how many of the actual positives were found.”\n\nF1-score balances the two (it’s high only when both Precision and Recall are high).\nIn medical diagnosis, Recall (Sensitivity) is considered the most important metric, followed by Precision, and F1-score. In other words, the goal is to detect all patients (high recall) while minimizing false positives, so balanced metrics like F1-score are most commonly used in practice.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Day5 Model Evaluation</span>"
+    ]
   }
 ]

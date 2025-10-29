@@ -226,6 +226,12 @@ window.Quarto = {
   <li><a href="#accuracy" id="toc-accuracy" class="nav-link" data-scroll-target="#accuracy"><span class="header-section-number">6.2</span> Accuracy</a></li>
   <li><a href="#precision" id="toc-precision" class="nav-link" data-scroll-target="#precision"><span class="header-section-number">6.3</span> Precision</a></li>
   <li><a href="#recall" id="toc-recall" class="nav-link" data-scroll-target="#recall"><span class="header-section-number">6.4</span> Recall</a></li>
+  <li><a href="#f1-score" id="toc-f1-score" class="nav-link" data-scroll-target="#f1-score"><span class="header-section-number">6.5</span> F1-Score</a>
+  <ul class="collapse">
+  <li><a href="#good" id="toc-good" class="nav-link" data-scroll-target="#good"><span class="header-section-number">6.5.1</span> Good</a></li>
+  <li><a href="#no-good" id="toc-no-good" class="nav-link" data-scroll-target="#no-good"><span class="header-section-number">6.5.2</span> No Good</a></li>
+  <li><a href="#intuition" id="toc-intuition" class="nav-link" data-scroll-target="#intuition"><span class="header-section-number">6.5.3</span> Intuition</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -436,7 +442,7 @@ Precision: 80.00%</code></pre>
 <li>In applications like spam detection, focusing solely on recall might result in excessive false positives (e.g., legitimate emails marked as spam).</li>
 </ul></li>
 </ul>
-<div id="cell-9" class="cell" data-execution_count="20">
+<div id="cell-9" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> recall_score</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -461,8 +467,50 @@ Precision: 80.00%</code></pre>
 Recall: 0.80</code></pre>
 </div>
 </div>
+</section>
+<section id="f1-score" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="f1-score"><span class="header-section-number">6.5</span> F1-Score</h2>
+<ul>
+<li>The F1-score is a metric that combines both Precision and Recall into a single value.<br>
+</li>
+<li>It is the harmonic mean of Precision and Recall, providing a balanced measure when both metrics are important.</li>
+</ul>
+<p><span class="math display">\[
+\text{F1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+\]</span></p>
+<section id="good" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="good"><span class="header-section-number">6.5.1</span> Good</h3>
+<ul>
+<li>When the dataset is imbalanced, and accuracy alone is misleading.<br>
+</li>
+<li>When both false positives and false negatives are important to minimize.<br>
+</li>
+<li>Especially useful in applications like medical diagnosis, fraud detection, or information retrieval.</li>
+</ul>
+</section>
+<section id="no-good" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="no-good"><span class="header-section-number">6.5.2</span> No Good</h3>
+<ul>
+<li>It does not differentiate between the cost of false positives and false negatives (both are treated equally).<br>
+</li>
+<li>If one of Precision or Recall is very low, the F1-score will also be low (since it’s the harmonic mean).<br>
+</li>
+<li>It might not reflect real-world costs when one type of error is more critical than the other.</li>
+</ul>
+</section>
+<section id="intuition" class="level3" data-number="6.5.3">
+<h3 data-number="6.5.3" class="anchored" data-anchor-id="intuition"><span class="header-section-number">6.5.3</span> Intuition</h3>
+<ul>
+<li><p>Precision focuses on <em>“how many of the predicted positives are correct.”</em><br>
+</p></li>
+<li><p>Recall focuses on <em>“how many of the actual positives were found.”</em><br>
+</p></li>
+<li><p>F1-score balances the two (it’s high only when both Precision and Recall are high).</p></li>
+<li><p>In medical diagnosis, Recall (Sensitivity) is considered the most important metric, followed by Precision, and F1-score. In other words, the goal is to detect all patients (high recall) while minimizing false positives, so balanced metrics like F1-score are most commonly used in practice.</p></li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
