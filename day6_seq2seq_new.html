@@ -237,8 +237,10 @@ window.Quarto = {
   </ul></li>
   <li><a href="#recurrent-neural-network" id="toc-recurrent-neural-network" class="nav-link" data-scroll-target="#recurrent-neural-network"><span class="header-section-number">7.5</span> Recurrent Neural Network</a>
   <ul class="collapse">
-  <li><a href="#context-vector-1" id="toc-context-vector-1" class="nav-link" data-scroll-target="#context-vector-1"><span class="header-section-number">7.5.1</span> Context Vector</a></li>
+  <li><a href="#numpy-version" id="toc-numpy-version" class="nav-link" data-scroll-target="#numpy-version"><span class="header-section-number">7.5.1</span> Numpy version</a></li>
+  <li><a href="#torch-version" id="toc-torch-version" class="nav-link" data-scroll-target="#torch-version"><span class="header-section-number">7.5.2</span> Torch version</a></li>
   </ul></li>
+  <li><a href="#context-vector-1" id="toc-context-vector-1" class="nav-link" data-scroll-target="#context-vector-1"><span class="header-section-number">7.6</span> Context Vector</a></li>
   </ul>
 </nav>
     </div>
@@ -837,7 +839,9 @@ cos(I,K) = 0.269</code></pre>
 </ul>
 <p><img src="images/rnn7.png" class="img-fluid"></p>
 <p><img src="images/rnn3.png" class="img-fluid"></p>
-<div id="cell-25" class="cell" data-execution_count="95">
+<section id="numpy-version" class="level3" data-number="7.5.1">
+<h3 data-number="7.5.1" class="anchored" data-anchor-id="numpy-version"><span class="header-section-number">7.5.1</span> Numpy version</h3>
+<div id="cell-26" class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -851,9 +855,9 @@ cos(I,K) = 0.269</code></pre>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>emb_sequence <span class="op">=</span> np.random.randn(seq_len, emb_dim)</span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"emb_sequence:"</span>, emb_sequence.shape)</span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>hidden_dim <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>W_x <span class="op">=</span> np.random.randn(emb_dim, hidden_dim)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>W_h <span class="op">=</span> np.random.randn(hidden_dim, hidden_dim)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.random.randn(hidden_dim)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>W_x <span class="op">=</span> np.random.randn(emb_dim, hidden_dim)<span class="op">*</span><span class="fl">0.05</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>W_h <span class="op">=</span> np.random.randn(hidden_dim, hidden_dim)<span class="op">*</span><span class="fl">0.05</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.random.randn(hidden_dim)<span class="op">*</span><span class="fl">0.05</span></span>
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"W_x:"</span>, W_x.shape)</span>
 <span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial hidden state</span></span>
@@ -872,16 +876,16 @@ cos(I,K) = 0.269</code></pre>
 <pre><code>emb_sequence: (10, 2)
 W_x: (2, 5)
 Hidden states (NumPy):
-[[-0.46396841  0.73594361 -0.84060088  0.25965742  0.36937933]
- [ 0.99903916 -0.99843419 -0.74180916 -0.99876645  0.90593373]
- [ 0.99992306  0.99662987  0.11542968  0.10356058  0.98926334]
- [-0.44945937  0.99383349 -0.99518413 -0.8822116  -0.72738411]
- [-0.97503917 -0.87055232 -0.22801348 -0.86160337  0.9853266 ]
- [ 0.98971905 -0.36810809  0.51331639  0.83740774  0.98409552]
- [ 0.99137146  0.99335549 -0.21395178 -0.87781323 -0.35535132]
- [ 0.36904036  0.37700701  0.9505538  -0.97106877  0.98876595]
- [ 0.95129386  0.3767507  -0.00250352  0.74993171  0.7421415 ]
- [ 0.97733114  0.93674681 -0.97349314 -0.97814934 -0.58725092]]</code></pre>
+[[ 0.29942596  0.38633554  0.80243096 -0.97855445  0.99798033]
+ [ 0.69851797 -0.3029548   0.98155098 -0.99944838  0.99949711]
+ [ 0.4391876  -0.93650202  0.99822936 -0.99994355  0.99833458]
+ [ 0.28858716 -0.9516967   0.97322422 -0.99997787  0.9999669 ]
+ [-0.3624835  -0.9798779   0.98066563 -0.99995748  0.99977527]
+ [-0.767614   -0.96572575  0.68286292 -0.99991754  0.99995277]
+ [-0.87756134 -0.92817612 -0.23997957 -0.99954553  0.99998064]
+ [-0.67346147 -0.4851387   0.53560583 -0.99993523  0.9999851 ]
+ [-0.84497638 -0.88284264  0.98812254 -0.99999324  0.9979058 ]
+ [-0.58894358 -0.76976047  0.61612632 -0.99999872  0.99999557]]</code></pre>
 </div>
 </div>
 <p><img src="images/rnn_dim2.png" class="img-fluid"></p>
@@ -889,7 +893,10 @@ Hidden states (NumPy):
 <li><span class="math inline">\(D_h\)</span>: hidden dimension</li>
 <li><span class="math inline">\(d\)</span>: embedding dimension</li>
 </ul>
-<div id="cell-28" class="cell" data-execution_count="76">
+</section>
+<section id="torch-version" class="level3" data-number="7.5.2">
+<h3 data-number="7.5.2" class="anchored" data-anchor-id="torch-version"><span class="header-section-number">7.5.2</span> Torch version</h3>
+<div id="cell-30" class="cell" data-execution_count="97">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -910,22 +917,22 @@ Hidden states (NumPy):
 <pre><code>(10, 2)
 torch.Size([1, 10, 2])
 Output states:
-tensor([[[ 0.4739, -0.1591,  0.4529,  0.2947,  0.3440],
-         [ 0.9210,  0.4046,  0.3952,  0.3524,  0.2480],
-         [ 0.6788, -0.0610,  0.2781, -0.0043,  0.4194],
-         [ 0.9305,  0.1011,  0.1269, -0.0863,  0.6753],
-         [ 0.7573,  0.2913,  0.1591,  0.1511,  0.0311],
-         [ 0.4238, -0.1579,  0.3684,  0.1817,  0.3314],
-         [ 0.1241, -0.7259,  0.1431, -0.3904,  0.8224],
-         [-0.2103, -0.1734,  0.2432,  0.3130, -0.1501],
-         [ 0.1367,  0.0706,  0.6811,  0.6808, -0.2682],
-         [-0.1690, -0.5707,  0.5731,  0.1992,  0.5198]]],
+tensor([[[-0.4768,  0.5836, -0.8029, -0.4806,  0.1046],
+         [-0.4630, -0.2343, -0.5656, -0.5535, -0.0735],
+         [-0.5150, -0.2604,  0.1072, -0.8628,  0.4430],
+         [-0.7185,  0.3697, -0.6139, -0.7473,  0.5094],
+         [-0.6789, -0.3708, -0.1423, -0.8539,  0.2483],
+         [-0.6111,  0.1792, -0.3196, -0.7467,  0.5368],
+         [-0.5773,  0.1212, -0.5674, -0.5475,  0.1770],
+         [-0.6127,  0.1145, -0.5489, -0.7723,  0.2986],
+         [-0.7713, -0.6431,  0.4262, -0.9678,  0.5190],
+         [-0.8245,  0.6274, -0.6190, -0.8740,  0.7516]]],
        grad_fn=&lt;TransposeBackward1&gt;)
-tensor([[[-0.1690, -0.5707,  0.5731,  0.1992,  0.5198]]],
+tensor([[[-0.8245,  0.6274, -0.6190, -0.8740,  0.7516]]],
        grad_fn=&lt;StackBackward0&gt;)</code></pre>
 </div>
 </div>
-<div id="cell-29" class="cell" data-execution_count="77">
+<div id="cell-31" class="cell" data-execution_count="98">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the encoder class</span></span>
@@ -974,31 +981,32 @@ tensor([[[-0.1690, -0.5707,  0.5731,  0.1992,  0.5198]]],
 <div class="cell-output cell-output-stdout">
 <pre><code>Encoded hidden states shape for the first sequence: (14, 5)
 Encoded hidden states for the first sequence:
-[[ 0.96438916 -0.01726693 -0.18236972  0.79383956 -0.84024901]
- [ 0.93006677 -0.99994749 -0.40949719  0.98715158 -0.77404891]
- [ 0.95627664  0.65536395  0.50028882  0.96146988 -0.98428894]
- [ 0.99988512 -0.99411163  0.3470189   0.99761741 -0.03975115]
- [ 0.99255144 -0.99079097  0.7831713   0.97819544 -0.97867004]
- [ 0.99089079 -0.9999934   0.97054064  0.07654471 -0.82321437]
- [ 0.98431912 -0.97116473  0.99718529  0.68979462 -0.63387253]
- [ 0.99999692  0.23837384  0.99849325  0.99281056 -0.74800533]
- [ 0.99556867 -0.9994825   0.69423654  0.89326086 -0.44658999]
- [ 0.99776544 -0.98995566  0.9662074   0.90636256 -0.93128734]
- [ 0.99931013 -0.95171335  0.99351435  0.60621425 -0.83100919]
- [ 0.98671721 -0.99440658  0.9910347   0.30467614 -0.79637027]
- [ 0.97338143  0.61472253  0.99601216  0.44441251 -0.82769898]
- [ 0.99366823 -0.99987209  0.72676423  0.97087939  0.32577281]]</code></pre>
+[[-0.24025492 -0.10793054 -0.95777763  0.12150322 -0.27608486]
+ [-0.98330114 -0.98759342 -0.68514051  0.98441066  0.96917908]
+ [-0.76950956 -0.9118691   0.85773358 -0.44749868 -0.93184399]
+ [ 0.67425467 -0.27695865  0.64138877 -0.96978164 -0.99845566]
+ [-0.07149827 -0.11759317 -0.73881839  0.61712252 -0.49133881]
+ [-0.98469526 -0.92052471 -0.00596013  0.97383545  0.9569795 ]
+ [-0.59745763 -0.09837761  0.97384219 -0.97816265 -0.99942951]
+ [ 0.5655236  -0.37825549 -0.76457959 -0.90929588 -0.97612664]
+ [-0.93359013 -0.99990735 -0.41617363  0.99999263  0.99999911]
+ [-0.82307552 -0.56726927  0.95509664 -0.9123647  -0.99820771]
+ [ 0.93811568 -0.73133968 -0.75001581 -0.89331081 -0.93541816]
+ [-0.90460361 -0.98962679 -0.86885509  0.99937879  0.99194029]
+ [-0.84491727 -0.9528924   0.82151492  0.0786839  -0.76828266]
+ [ 0.86057707 -0.68975871  0.85920425 -0.7866081  -0.80513464]]</code></pre>
 </div>
 </div>
-<section id="context-vector-1" class="level3" data-number="7.5.1">
-<h3 data-number="7.5.1" class="anchored" data-anchor-id="context-vector-1"><span class="header-section-number">7.5.1</span> Context Vector</h3>
+</section>
+</section>
+<section id="context-vector-1" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="context-vector-1"><span class="header-section-number">7.6</span> Context Vector</h2>
 <ul>
 <li>The final hidden state (or all hidden states) of the RNN represents the input sequence context.</li>
 <li>Passed to the decoder for generating output.</li>
 </ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
