@@ -243,7 +243,7 @@ window.Quarto = {
   <li><a href="#teacher-forcing-training" id="toc-teacher-forcing-training" class="nav-link" data-scroll-target="#teacher-forcing-training"><span class="header-section-number">8.2.4</span> Teacher forcing (training)</a></li>
   </ul></li>
   <li><a href="#loss-function" id="toc-loss-function" class="nav-link" data-scroll-target="#loss-function"><span class="header-section-number">8.3</span> Loss Function</a></li>
-  <li><a href="#inference-process-decoding" id="toc-inference-process-decoding" class="nav-link" data-scroll-target="#inference-process-decoding"><span class="header-section-number">8.4</span> 🔄 Inference Process (Decoding)</a></li>
+  <li><a href="#inference-process" id="toc-inference-process" class="nav-link" data-scroll-target="#inference-process"><span class="header-section-number">8.4</span> Inference Process</a></li>
   <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference"><span class="header-section-number">8.5</span> Inference</a></li>
   </ul>
 </nav>
@@ -284,12 +284,14 @@ window.Quarto = {
 <h3 data-number="8.2.1" class="anchored" data-anchor-id="embedding-layer-input-layer"><span class="header-section-number">8.2.1</span> Embedding Layer (Input layer)</h3>
 <ul>
 <li>Converts input indices (target tokens) into dense vectors.</li>
+<li><span class="math inline">\(x_t​=Embed(y_{t−1​})\)</span></li>
 </ul>
 </section>
 <section id="rnn-lstm-gru" class="level3" data-number="8.2.2">
 <h3 data-number="8.2.2" class="anchored" data-anchor-id="rnn-lstm-gru"><span class="header-section-number">8.2.2</span> RNN / LSTM / GRU</h3>
 <ul>
 <li>Generates hidden states based on embeddings and previous hidden states.</li>
+<li><span class="math inline">\(h_t​=f(h_{t−1}​,x_t​)\)</span></li>
 </ul>
 </section>
 <section id="linear-softmax-layer-output-layer" class="level3" data-number="8.2.3">
@@ -351,7 +353,7 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td><strong>Logit</strong></td>
-<td>z_i</td>
+<td><span class="math inline">\(z_i\)</span></td>
 <td>(-∞, +∞)</td>
 <td>모델이 각 클래스에 대해 계산한 “점수”</td>
 </tr>
@@ -376,7 +378,7 @@ window.Quarto = {
 </tbody>
 </table>
 <p><img src="images/pi.png" class="img-fluid"></p>
-<div id="cell-6" class="cell" data-execution_count="11">
+<div id="cell-6" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -395,8 +397,8 @@ Cross-Entropy Loss: tensor(1.4170)</code></pre>
 </div>
 </div>
 </section>
-<section id="inference-process-decoding" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="inference-process-decoding"><span class="header-section-number">8.4</span> 🔄 Inference Process (Decoding)</h2>
+<section id="inference-process" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="inference-process"><span class="header-section-number">8.4</span> Inference Process</h2>
 <p>During inference (or sequence generation), the decoder produces the output sequence <strong>step-by-step</strong><br>
 in an <em>autoregressive</em> manner — meaning each predicted token is fed back as input for the next step.</p>
 <ol type="1">
