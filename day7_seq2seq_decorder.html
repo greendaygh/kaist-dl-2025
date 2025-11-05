@@ -235,7 +235,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#recap" id="toc-recap" class="nav-link active" data-scroll-target="#recap"><span class="header-section-number">8.1</span> Recap</a></li>
-  <li><a href="#decoder" id="toc-decoder" class="nav-link" data-scroll-target="#decoder"><span class="header-section-number">8.2</span> Decoder</a>
+  <li><a href="#training" id="toc-training" class="nav-link" data-scroll-target="#training"><span class="header-section-number">8.2</span> Training</a>
   <ul class="collapse">
   <li><a href="#embedding-layer-input-layer" id="toc-embedding-layer-input-layer" class="nav-link" data-scroll-target="#embedding-layer-input-layer"><span class="header-section-number">8.2.1</span> Embedding Layer (Input layer)</a></li>
   <li><a href="#rnn-lstm-gru" id="toc-rnn-lstm-gru" class="nav-link" data-scroll-target="#rnn-lstm-gru"><span class="header-section-number">8.2.2</span> RNN / LSTM / GRU</a></li>
@@ -243,8 +243,7 @@ window.Quarto = {
   <li><a href="#teacher-forcing-training" id="toc-teacher-forcing-training" class="nav-link" data-scroll-target="#teacher-forcing-training"><span class="header-section-number">8.2.4</span> Teacher forcing (training)</a></li>
   </ul></li>
   <li><a href="#loss-function" id="toc-loss-function" class="nav-link" data-scroll-target="#loss-function"><span class="header-section-number">8.3</span> Loss Function</a></li>
-  <li><a href="#inference-process" id="toc-inference-process" class="nav-link" data-scroll-target="#inference-process"><span class="header-section-number">8.4</span> Inference Process</a></li>
-  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference"><span class="header-section-number">8.5</span> Inference</a></li>
+  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference"><span class="header-section-number">8.4</span> Inference</a></li>
   </ul>
 </nav>
     </div>
@@ -274,8 +273,8 @@ window.Quarto = {
 <h2 data-number="8.1" class="anchored" data-anchor-id="recap"><span class="header-section-number">8.1</span> Recap</h2>
 <p><img src="images/rnn_encoder.png" class="img-fluid"></p>
 </section>
-<section id="decoder" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="decoder"><span class="header-section-number">8.2</span> Decoder</h2>
+<section id="training" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="training"><span class="header-section-number">8.2</span> Training</h2>
 <ul>
 <li>The decoder generates the output sequence step-by-step, conditioned on the latent representation provided by the encoder</li>
 <li>The decoder typically consists of an RNN-based architecture, such as an LSTM or GRU, and operates sequentially.</li>
@@ -292,14 +291,18 @@ window.Quarto = {
 <ul>
 <li>Generates hidden states based on embeddings and previous hidden states.</li>
 <li><span class="math inline">\(h_t​=f(h_{t−1}​,x_t​)\)</span></li>
-<li><span class="math inline">\(h_t​=tanh(W_xh_​xt​+Whh​ht−1​+bh​)\)</span></li>
+<li><span class="math inline">\(h_t​=tanh(W_{x} ​x_t​ + W_{h} ​h_{t−1​}+b_h​)\)</span></li>
 </ul>
 </section>
 <section id="linear-softmax-layer-output-layer" class="level3" data-number="8.2.3">
 <h3 data-number="8.2.3" class="anchored" data-anchor-id="linear-softmax-layer-output-layer"><span class="header-section-number">8.2.3</span> Linear + Softmax Layer (Output layer)</h3>
 <ul>
 <li>Maps the hidden states to the output vocabulary space.</li>
+<li><span class="math inline">\(z_t​=W_o ​h_t​+b_o\)</span>​</li>
+<li><span class="math inline">\(z_t = \{z_1, z_2, ..., z_i, ... z_T\}\)</span></li>
 <li>Converts raw scores (logits) into probabilities over the vocabulary.</li>
+<li><span class="math inline">\(P(y_t​)=softmax(z_t​)\)</span></li>
+<li><span class="math inline">\(p_i\)</span> is the i-th element of P(y_t)</li>
 </ul>
 </section>
 <section id="teacher-forcing-training" class="level3" data-number="8.2.4">
@@ -310,9 +313,10 @@ window.Quarto = {
 <li>The actual token from the target sequence as input.</li>
 <li>The hidden states from the previous step (or from the encoder for the first step).</li>
 </ul></li>
-<li>Teacher forcing speeds up training but may cause discrepancies during inference</li>
+<li>This stabilizes and speeds up training.</li>
+<li>However, it can cause exposure bias, where the model becomes over-reliant on correct inputs.</li>
 </ul>
-<p><img src="images/teacherforcing3.png" class="img-fluid"></p>
+<p><img src="images/teacherforcing4.png" class="img-fluid"></p>
 </section>
 </section>
 <section id="loss-function" class="level2" data-number="8.3">
@@ -323,18 +327,14 @@ window.Quarto = {
 <li>Minimizing the cross-entropy loss between the predicted distribution and the true target tokens.</li>
 </ul>
 <p><span class="math display">\[
-\mathcal{L} = -\sum_{t=1}^{T} \log P(y_t^{*} | y_{&lt;t}^{*}, x)
+\mathcal{L} = -\sum_{t=1}^{T} \log P(y_t^{*} | y_{t-1}^{*}, x)
 \]</span></p>
+<p>Where:</p>
 <ul>
-<li><p>Where:</p></li>
 <li><p><span class="math inline">\(y_t^{*}\)</span> : the ground-truth token at time step t</p></li>
-<li><p><span class="math inline">\(y_{&lt;t}^{*}\)</span> : the correct tokens from previous steps</p></li>
-<li><p>x: the input sequence</p></li>
-<li><p>in Teacher Forcing, we use the ground-truth token $ y_{t-1}^{*} $ as the next input:</p>
-<ul>
-<li>This stabilizes and speeds up training.</li>
-<li>However, it can cause exposure bias, where the model becomes over-reliant on correct inputs.</li>
-</ul></li>
+<li><p><span class="math inline">\(y_{t-1}^{*}\)</span> : the correct tokens from previous steps</p></li>
+<li><p><span class="math inline">\(x\)</span>: the input sequence</p></li>
+<li><p>in Teacher Forcing, we use the ground-truth token as the next input:</p></li>
 </ul>
 <table class="table">
 <colgroup>
@@ -360,19 +360,19 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td><strong>Softmax Probability</strong></td>
-<td>p_i = e^{z_i} / sum(e^{z_j})</td>
+<td><span class="math inline">\(p_i = e^{z_i} / sum(e^{z_j})\)</span></td>
 <td>(0, 1)</td>
 <td>실제 예측 확률</td>
 </tr>
 <tr class="odd">
 <td><strong>Log Probability</strong></td>
-<td>log(p_i)</td>
+<td><span class="math inline">\(log(p_i)\)</span></td>
 <td>(-∞, 0)</td>
 <td>확률의 로그값, 손실 계산에 사용</td>
 </tr>
 <tr class="even">
 <td><strong>Cross-Entropy Loss</strong></td>
-<td>-log(p_{true})</td>
+<td><span class="math inline">\(L\)</span></td>
 <td>≥ 0</td>
 <td>정답 클래스 확률의 음의 로그</td>
 </tr>
@@ -398,47 +398,47 @@ Cross-Entropy Loss: tensor(1.4170)</code></pre>
 </div>
 </div>
 </section>
-<section id="inference-process" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="inference-process"><span class="header-section-number">8.4</span> Inference Process</h2>
-<p>During inference (or sequence generation), the decoder produces the output sequence <strong>step-by-step</strong><br>
+<section id="inference" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="inference"><span class="header-section-number">8.4</span> Inference</h2>
+<p>During inference (sequence generation), the decoder produces the output sequence <strong>step-by-step</strong><br>
 in an <em>autoregressive</em> manner — meaning each predicted token is fed back as input for the next step.</p>
-<ol type="1">
-<li><strong>Initialize the decoder state</strong>
+<ul>
+<li>Initialize the decoder state
 <ul>
 <li>The decoder’s initial hidden state is set to the encoder’s final hidden state:<br>
-[ h_0^{dec} = h_T^{enc} ]</li>
+</li>
+<li><span class="math inline">\(h_0^{dec} = h_T^{enc}\)</span></li>
 </ul></li>
-<li><strong>Start with a special <code>&lt;SOS&gt;</code> (start-of-sequence) token</strong>
+<li>Start with a special <code>&lt;SOS&gt;</code> token
 <ul>
 <li>This token is used as the first input to signal the beginning of generation.</li>
 </ul></li>
-<li><strong>Iterative decoding</strong><br>
-For each time step ( t ):
+<li>Iterative decoding
 <ul>
+<li>For each time step t</li>
 <li>Compute the new hidden state using the previous hidden state and input token:<br>
-[ h_t = f(h_{t-1}, x_t) ]</li>
+</li>
+<li><span class="math inline">\(h_t = f(h_{t-1}, x_t)\)</span></li>
 <li>Generate the output probability distribution over the vocabulary:<br>
-[ P(y_t) = (W_o h_t + b_o) ]</li>
+</li>
+<li><span class="math inline">\(P(y_t) = \text{softmax}(W_o h_t + b_o)\)</span></li>
 <li>Select the next token:
 <ul>
-<li><strong>Greedy decoding:</strong> choose the most probable token<br>
-[ y_t = P(y_t) ]</li>
-<li>or <strong>Beam search / Sampling</strong> for more diverse results.</li>
+<li>Greedy decoding: choose the most probable token<br>
+</li>
+<li><span class="math inline">\(y_t = \arg\max P(y_t)\)</span></li>
 </ul></li>
-<li>Feed the predicted token ( y_t ) back into the decoder as input for the next step.</li>
+<li>Feed the predicted token y_t back into the decoder as input for the next step.</li>
 </ul></li>
-<li><strong>Termination</strong>
+<li>Termination
 <ul>
-<li>The generation stops when the model outputs an <code>&lt;EOS&gt;</code> (end-of-sequence) token<br>
-or when a predefined maximum length is reached.</li>
+<li>The generation stops when the model outputs an <code>&lt;EOS&gt;</code> token<br>
+</li>
+<li>or when a predefined maximum length is reached.</li>
 </ul></li>
-</ol>
-<p>In summary, the decoder generates one token at a time, using its own predictions to continue generating until the end-of-sequence is reached.</p>
-</section>
-<section id="inference" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="inference"><span class="header-section-number">8.5</span> Inference</h2>
+</ul>
 <p><img src="images/decoder3.png" class="img-fluid"></p>
-<div id="cell-10" class="cell" data-execution_count="4">
+<div id="cell-9" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -481,7 +481,7 @@ Output logits: tensor([[-0.1620,  0.1818,  0.1185,  0.4123, -0.3347,  0.3087,  0
        grad_fn=&lt;AddmmBackward0&gt;)</code></pre>
 </div>
 </div>
-<div id="cell-11" class="cell" data-execution_count="5">
+<div id="cell-10" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
@@ -594,7 +594,7 @@ Epoch 190/200, Loss: 12.8804, Accuracy: 0.8611
 Epoch 200/200, Loss: 11.1954, Accuracy: 0.9444</code></pre>
 </div>
 </div>
-<div id="cell-12" class="cell" data-execution_count="6">
+<div id="cell-11" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">## plot the loss and accuracy</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -639,7 +639,7 @@ Epoch 200/200, Loss: 11.1954, Accuracy: 0.9444</code></pre>
 <li>Data size</li>
 </ul></li>
 </ul>
-<div id="cell-14" class="cell" data-execution_count="7">
+<div id="cell-13" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the model</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>model.load_state_dict(torch.load(<span class="st">"seq2seq_model.pth"</span>, weights_only<span class="op">=</span><span class="va">False</span>))</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -692,7 +692,7 @@ Target sequence: ['V', 'K', 'K', 'L', 'N', 'T', 'N', 'D', 'R', 'G']
 Predic sequence: ['A', 'C', 'T', 'W', 'P', 'Y', 'L', 'P', 'K', 'S']</code></pre>
 </div>
 </div>
-<div id="cell-15" class="cell" data-execution_count="8">
+<div id="cell-14" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the model</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model.load_state_dict(torch.load(<span class="st">"seq2seq_model.pth"</span>, weights_only<span class="op">=</span><span class="va">False</span>))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
