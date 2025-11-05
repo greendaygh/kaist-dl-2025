@@ -64,6 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./day8_attention.html" rel="next">
 <link href="./day6_seq2seq_encoder.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -224,6 +225,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Day7 Seq2Seq Decoder</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./day8_attention.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Day8 seq2seq with attention</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -247,6 +254,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">8.4.1</span> Example</a></li>
   <li><a href="#model-and-data" id="toc-model-and-data" class="nav-link" data-scroll-target="#model-and-data"><span class="header-section-number">8.4.2</span> Model and Data</a></li>
+  <li><a href="#training-1" id="toc-training-1" class="nav-link" data-scroll-target="#training-1"><span class="header-section-number">8.4.3</span> Training</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -445,7 +453,7 @@ in an <em>autoregressive</em> manner — meaning each predicted token is fed bac
 <section id="example" class="level3" data-number="8.4.1">
 <h3 data-number="8.4.1" class="anchored" data-anchor-id="example"><span class="header-section-number">8.4.1</span> Example</h3>
 <ul>
-<li><p>Seq2Seq (no-attention) — Protein secondary-structure tagging (H/E/C)</p></li>
+<li><p>Seq2Seq (no-attention) — Protein secondary-structure tagging (H: helix, E: strand, C: coil)</p></li>
 <li><p>Task: Amino-acid sequence → per-residue labels {H: helix, E: strand, C: coil}</p>
 <ul>
 <li>Synthetic, biologically-plausible toy dataset (helix/strand segments embedded)</li>
@@ -494,7 +502,7 @@ in an <em>autoregressive</em> manner — meaning each predicted token is fed bac
 {'&lt;pad&gt;': 0, 'H': 1, 'E': 2, 'C': 3}</code></pre>
 </div>
 </div>
-<div id="cell-11" class="cell" data-execution_count="62">
+<div id="cell-11" class="cell" data-execution_count="72">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple synthetic data: sample AA, assign labels by propensities + small noise</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------</span></span>
@@ -502,7 +510,7 @@ in an <em>autoregressive</em> manner — meaning each predicted token is fed bac
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>BETA    <span class="op">=</span> <span class="bu">set</span>(<span class="bu">list</span>(<span class="st">"VIYFWTC"</span>))</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>COIL    <span class="op">=</span> <span class="bu">set</span>(<span class="bu">list</span>(<span class="st">"PGSN"</span>))</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gen_sample(min_len<span class="op">=</span><span class="dv">60</span>, max_len<span class="op">=</span><span class="dv">120</span>, noise<span class="op">=</span><span class="fl">0.05</span>):</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gen_sample(min_len<span class="op">=</span><span class="dv">60</span>, max_len<span class="op">=</span><span class="dv">120</span>, noise<span class="op">=</span><span class="fl">0.5</span>):</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> random.randint(min_len, max_len)</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    seq <span class="op">=</span> [random.choice(AA) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(L)]</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> []</span>
@@ -541,7 +549,7 @@ in an <em>autoregressive</em> manner — meaning each predicted token is fed bac
 </section>
 <section id="model-and-data" class="level3" data-number="8.4.2">
 <h3 data-number="8.4.2" class="anchored" data-anchor-id="model-and-data"><span class="header-section-number">8.4.2</span> Model and Data</h3>
-<div id="cell-13" class="cell" data-execution_count="64">
+<div id="cell-13" class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------</span></span>
@@ -550,14 +558,14 @@ in an <em>autoregressive</em> manner — meaning each predicted token is fed bac
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Tagger(nn.Module):</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab, n_labels, emb<span class="op">=</span><span class="dv">128</span>, hid<span class="op">=</span><span class="dv">256</span>):</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.emb <span class="op">=</span> nn.Embedding(vocab, emb, padding_idx<span class="op">=</span>PAD_SRC)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.emb <span class="op">=</span> nn.Embedding(vocab, emb, padding_idx<span class="op">=</span>PAD_SRC) <span class="co"># vocab = 23</span></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rnn <span class="op">=</span> nn.GRU(emb, hid, batch_first<span class="op">=</span><span class="va">True</span>, bidirectional<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.proj <span class="op">=</span> nn.Linear(hid<span class="op">*</span><span class="dv">2</span>, n_labels)</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, src_ids):</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.emb(src_ids)                 <span class="co"># (B,S,E)</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        y, _ <span class="op">=</span> <span class="va">self</span>.rnn(x)                    <span class="co"># (B,S,2H)</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> y[:,<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>,:]                       <span class="co"># strip BOS/EOS → (B,L,2H)</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.proj(y)                   <span class="co"># (B,L,C)</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.emb(src_ids)                 <span class="co"># (Batchsize,Seq_len,Emb_dim)</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        y, _ <span class="op">=</span> <span class="va">self</span>.rnn(x)                    <span class="co"># (Batchsize,Seq_len,2*Hidden_dim)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> y[:,<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>,:]                       <span class="co"># strip BOS/EOS → (Batchsize,Seq_len,2*Hidden_dim)</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.proj(y)                   <span class="co"># (Batchsize,Seq_len,Num_labels)</span></span>
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------</span></span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss &amp; metric</span></span>
@@ -582,7 +590,10 @@ in an <em>autoregressive</em> manner — meaning each predicted token is fed bac
 <span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>valid_loader <span class="op">=</span> DataLoader(ProteinSSDataset(N_VALID), batch_size<span class="op">=</span>BATCH_SIZE, shuffle<span class="op">=</span><span class="va">False</span>, collate_fn<span class="op">=</span>collate_fn)</span>
 <span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>test_loader  <span class="op">=</span> DataLoader(ProteinSSDataset(N_TEST),  batch_size<span class="op">=</span>BATCH_SIZE, shuffle<span class="op">=</span><span class="va">False</span>, collate_fn<span class="op">=</span>collate_fn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-14" class="cell" data-execution_count="65">
+</section>
+<section id="training-1" class="level3" data-number="8.4.3">
+<h3 data-number="8.4.3" class="anchored" data-anchor-id="training-1"><span class="header-section-number">8.4.3</span> Training</h3>
+<div id="cell-15" class="cell" data-execution_count="75">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Train</span></span>
@@ -623,14 +634,14 @@ in an <em>autoregressive</em> manner — meaning each predicted token is fed bac
 <span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>infer_one(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1: train 0.395 | valid 0.163, acc 97.02%
-Epoch 2: train 0.176 | valid 0.156, acc 97.02%
-Epoch 3: train 0.171 | valid 0.155, acc 97.02%
-Epoch 4: train 0.171 | valid 0.156, acc 97.02%
-Epoch 5: train 0.170 | valid 0.157, acc 97.02%
-SEQ : PYTIKKQWDTRVKEPWFVLITQITRFERGSMWMWAFREMMDLIYMVRPTGYNWYWMNDQHEEGKIMIICQGPEQTQYQYM
-GOLD: CEEEHHHECEHEHHCEEEHEEHEEHEHCCCHEHEHEHHHHEHEEHEHCECECEEECCCHHHHCHEHEEEHCCHHEHEHEH
-PRED: CEEEHHHECEHEHHCEEEHEEHEEHEHHCCHEHEHEHHHHCHEEHEHCECECEEEHCCHHHHCHEHEEEHCCHHEHEHEH</code></pre>
+<pre><code>Epoch 1: train 0.943 | valid 0.878, acc 67.17%
+Epoch 2: train 0.876 | valid 0.869, acc 67.17%
+Epoch 3: train 0.871 | valid 0.865, acc 67.17%
+Epoch 4: train 0.869 | valid 0.866, acc 67.17%
+Epoch 5: train 0.868 | valid 0.865, acc 67.17%
+SEQ : TDPDHFWIAEEQHMHWILHICTFFCGFAEDSHTYNNEQVSIIMPKPGFYCVRRTYDDNYVPYFIDCAYHMWMVCVRYYQVFQREFDNQALLHNEHSFAFLHPNATMAF
+GOLD: CHHHCECEHHHCHEHCHEEEECECHCCHHECEEECCHHHEEEHCHECCEEEHHEEECEHECHEECECECCHHEEHCEEHCEHHHEHCHCHECCCHCEHEHHCCEEEHC
+PRED: ECCCHEEEHHHHHHHEEHHEEEEEECEHHCCHEECCHHECEEHCHCCEEEEHHEECCCEECEEECEHEHHEHEEEHEEHEEHHHECCHHHHHCHHCEHEHHCCHEHHE</code></pre>
 </div>
 </div>
 <ul>
@@ -640,7 +651,7 @@ PRED: CEEEHHHECEHEHHCEEEHEEHEEHEHHCCHEHEHEHHHHCHEEHEHCECECEEEHCCHHHHCHEHEEEHCCHH
 <li><span class="citation" data-cites="dataclass">@dataclass</span> automatically generates methods like <strong>init</strong> and <strong>repr</strong> to make the class easier to use as a data container.</li>
 </ul></li>
 </ul>
-<div id="cell-16" class="cell" data-execution_count="66">
+<div id="cell-17" class="cell" data-execution_count="76">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluation metrics &amp; plots (on </span><span class="al">TEST</span><span class="co"> set)</span></span>
@@ -757,11 +768,11 @@ PRED: CEEEHHHECEHEHHCEEEHEEHEEHEHHCCHEHEHEHHHHCHEEHEHCECECEEEHCCHHHHCHEHEEEHCCHH
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Per-class metrics (TEST):
-  H: P=0.967 R=0.972 F1=0.970 (support=7053)
-  E: P=0.966 R=0.970 F1=0.968 (support=6479)
-  C: P=0.964 R=0.950 F1=0.957 (support=4706)
-Macro: P=0.966 R=0.964 F1=0.965
-Micro: P=0.966 R=0.966 F1=0.966</code></pre>
+  H: P=0.661 R=0.719 F1=0.689 (support=6514)
+  E: P=0.669 R=0.687 F1=0.678 (support=6145)
+  C: P=0.662 R=0.570 F1=0.612 (support=5317)
+Macro: P=0.664 R=0.659 F1=0.660
+Micro: P=0.664 R=0.664 F1=0.664</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -1200,6 +1211,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./day8_attention.html" class="pagination-link" aria-label="Day8 seq2seq with attention">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Day8 seq2seq with attention</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
