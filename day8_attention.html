@@ -404,7 +404,7 @@ c_t = \sum_i \alpha_{t,i} h_i
 <li>Use the context vector <span class="math inline">\(c_t\)</span> and the decoder’s current hidden state to predict the next token.</li>
 </ul></li>
 </ul>
-<p><img src="images/attention5.png" class="img-fluid"></p>
+<p><img src="images/attention.png" class="img-fluid"></p>
 <div id="cell-10" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -755,7 +755,7 @@ Target k-mers[0]: ['CCT', 'YCC', 'HYC', 'RHY', 'GRH', 'KAD', 'LDG', 'ILD', 'LIL'
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>hidden_dim <span class="op">=</span> <span class="dv">32</span></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">1e-3</span></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>teacher_forcing_ratio <span class="op">=</span> <span class="fl">0.5</span>   <span class="co"># 필요 시 조정</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>teacher_forcing_ratio <span class="op">=</span> <span class="fl">0.5</span>   </span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
@@ -790,7 +790,7 @@ Target k-mers[0]: ['CCT', 'YCC', 'HYC', 'RHY', 'GRH', 'KAD', 'LDG', 'ILD', 'LIL'
 <span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Forward</span></span>
 <span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        logits, attn_list <span class="op">=</span> model(</span>
 <span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>            src<span class="op">=</span>src,</span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>            src_lengths<span class="op">=</span>src_lens,          <span class="co"># encoder 내부에서 .cpu() 사용</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>            src_lengths<span class="op">=</span>src_lens,   </span>
 <span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>            dec_inputs<span class="op">=</span>dec_in,</span>
 <span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>            teacher_forcing_ratio<span class="op">=</span>teacher_forcing_ratio,</span>
 <span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>            src_mask<span class="op">=</span>src_mask <span class="co"># prevent padding from attending</span></span>
@@ -805,16 +805,18 @@ Target k-mers[0]: ['CCT', 'YCC', 'HYC', 'RHY', 'GRH', 'KAD', 'LDG', 'ILD', 'LIL'
 <span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> criterion(logits_flat, targets_flat)</span>
 <span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
 <span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># (선택) gradient clipping</span></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm<span class="op">=</span><span class="fl">1.0</span>)</span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># gradient clipping</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>        <span class="co"># essential for RNNs</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Limits the growth of gradients during backpropagation</span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm<span class="op">=</span><span class="fl">1.0</span>)</span>
 <span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">+=</span> loss.item()</span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>        num_batches <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>    avg_loss <span class="op">=</span> total_loss <span class="op">/</span> <span class="bu">max</span>(<span class="dv">1</span>, num_batches)</span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>epochs<span class="sc">}</span><span class="ss"> - Loss: </span><span class="sc">{</span>avg_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>        num_batches <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>    avg_loss <span class="op">=</span> total_loss <span class="op">/</span> <span class="bu">max</span>(<span class="dv">1</span>, num_batches)</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>epochs<span class="sc">}</span><span class="ss"> - Loss: </span><span class="sc">{</span>avg_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 1/10 - Loss: 7.6287
 Epoch 2/10 - Loss: 7.5407
@@ -828,7 +830,7 @@ Epoch 9/10 - Loss: 6.1285
 Epoch 10/10 - Loss: 6.0850</code></pre>
 </div>
 </div>
-<div id="cell-17" class="cell" data-execution_count="14">
+<div id="cell-17" class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -850,52 +852,52 @@ Epoch 10/10 - Loss: 6.0850</code></pre>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 샘플 배치에서 시각화 ---</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 우리 파이프라인 기준: loader가 (src, src_lens, dec_in, dec_tg, dec_lens)를 반환</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># loader returns (src, src_lens, dec_in, dec_tg, dec_lens)</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># visualize first batch</span></span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>src_example, src_lens_example, dec_in_example, dec_tg_example, dec_lens_example <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(loader))</span>
 <span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>src_example <span class="op">=</span> src_example.to(device)</span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>dec_in_example <span class="op">=</span> dec_in_example.to(device)</span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>dec_tg_example <span class="op">=</span> dec_tg_example.to(device)</span>
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># vocab 역매핑</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># vocab reverse mapping</span></span>
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>inv_vocab <span class="op">=</span> {idx: tok <span class="cf">for</span> tok, idx <span class="kw">in</span> vocab.items()}</span>
 <span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
 <span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 선택: 패딩 마스크 사용(권장)</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># padding mask </span></span>
 <span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    src_mask_example <span class="op">=</span> (src_example <span class="op">!=</span> PAD)</span>
 <span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># teacher forcing 0으로 두고 디코딩</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># no teacher forcing (inference step)</span></span>
 <span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    logits, attn_list <span class="op">=</span> model(</span>
 <span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        src<span class="op">=</span>src_example,</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        src_lengths<span class="op">=</span>src_lens_example,   <span class="co"># encoder 내부에서 .cpu() 처리</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        src_lengths<span class="op">=</span>src_lens_example,   </span>
 <span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        dec_inputs<span class="op">=</span>dec_in_example,</span>
 <span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        teacher_forcing_ratio<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        src_mask<span class="op">=</span>src_mask_example</span>
 <span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 어텐션 행렬 만들기 ----</span></span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co"># attn_list: 길이 (T_out-1) 리스트, 각 원소가 (B, S_src)</span></span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 첫 번째 배치 샘플만 시각화</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co"># attn_list: length (T_out-1) list, each element is (B, S_src)</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co"># build attention matrix</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="co"># visualize attention weights for first sequence in batch</span></span>
 <span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>attn_matrix <span class="op">=</span> torch.stack([aw[<span class="dv">0</span>] <span class="cf">for</span> aw <span class="kw">in</span> attn_list], dim<span class="op">=</span><span class="dv">0</span>).cpu().numpy()  <span class="co"># (T_out-1, S_src)</span></span>
 <span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 라벨(토큰) 구성: PAD/&lt;SOS&gt; 제외하고 실제 길이만 사용 ----</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="co"># label (token) construction without PAD/&lt;SOS&gt;</span></span>
 <span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>S_src <span class="op">=</span> <span class="bu">int</span>(src_lens_example[b].item())</span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>T_dec <span class="op">=</span> <span class="bu">int</span>(dec_lens_example[b].item())  <span class="co"># dec_in/dec_tg 길이 동일</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>T_dec <span class="op">=</span> <span class="bu">int</span>(dec_lens_example[b].item())  <span class="co"># dec_in/dec_tg same length</span></span>
 <span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 입력 토큰: 소스에서 유효 길이만</span></span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>input_tokens <span class="op">=</span> [inv_vocab[<span class="bu">int</span>(t)] <span class="cf">for</span> t <span class="kw">in</span> src_example[b, :S_src].cpu().tolist()]</span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="co"># 출력 토큰: &lt;SOS&gt;를 제외한 정답 토큰들 (dec_tg는 끝에 &lt;EOS&gt; 포함)</span></span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>output_tokens <span class="op">=</span> [inv_vocab[<span class="bu">int</span>(t)] <span class="cf">for</span> t <span class="kw">in</span> dec_tg_example[b, <span class="dv">1</span>:T_dec].cpu().tolist()]  <span class="co"># 길이 = T_out-1</span></span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 크기 일치 확인 (보통 일치하지만, 방어적으로 min으로 자름) ----</span></span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co"># attn_matrix shape = (len(output_tokens), len(input_tokens)) 이어야 함</span></span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>attn_matrix <span class="op">=</span> attn_matrix[:<span class="bu">len</span>(output_tokens), :<span class="bu">len</span>(input_tokens)]</span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 플로팅 ----</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="co"># input token: valid length in source</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="co"># without PAD/&lt;SOS&gt;</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>input_tokens <span class="op">=</span> [inv_vocab[<span class="bu">int</span>(t)] <span class="cf">for</span> t <span class="kw">in</span> src_example[b, :S_src].cpu().tolist()]</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="co"># output token: without &lt;SOS&gt;</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>output_tokens <span class="op">=</span> [inv_vocab[<span class="bu">int</span>(t)] <span class="cf">for</span> t <span class="kw">in</span> dec_tg_example[b, <span class="dv">1</span>:T_dec].cpu().tolist()]  <span class="co"># 길이 = T_out-1</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co"># check size</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="co"># attn_matrix shape = (len(output_tokens), len(input_tokens)) </span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>attn_matrix <span class="op">=</span> attn_matrix[:<span class="bu">len</span>(output_tokens), :<span class="bu">len</span>(input_tokens)]</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>plot_attention_matrix(attn_matrix, input_tokens, output_tokens, title<span class="op">=</span><span class="st">"Attention Weights (sample 0)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
