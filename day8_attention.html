@@ -64,6 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./kaist_hw1.html" rel="next">
 <link href="./day7_seq2seq_decorder.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -230,6 +231,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Day8 seq2seq with attention</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kaist_hw1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">HW1</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -242,11 +249,12 @@ window.Quarto = {
   <ul>
   <li><a href="#attention" id="toc-attention" class="nav-link active" data-scroll-target="#attention"><span class="header-section-number">9.1</span> Attention</a>
   <ul class="collapse">
-  <li><a href="#fixed-length-context-vector" id="toc-fixed-length-context-vector" class="nav-link" data-scroll-target="#fixed-length-context-vector"><span class="header-section-number">9.1.1</span> Fixed-length context vector</a></li>
+  <li><a href="#fixed-length-context-vector" id="toc-fixed-length-context-vector" class="nav-link" data-scroll-target="#fixed-length-context-vector"><span class="header-section-number">9.1.1</span> Fixed-length Context Vector</a></li>
   <li><a href="#attention-mechanism" id="toc-attention-mechanism" class="nav-link" data-scroll-target="#attention-mechanism"><span class="header-section-number">9.1.2</span> Attention Mechanism</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">9.1.3</span> Example</a></li>
-  <li><a href="#attention-mechanism-steps-dot-product-attention" id="toc-attention-mechanism-steps-dot-product-attention" class="nav-link" data-scroll-target="#attention-mechanism-steps-dot-product-attention"><span class="header-section-number">9.1.4</span> Attention Mechanism Steps (Dot product attention)</a></li>
-  <li><a href="#simulation-data" id="toc-simulation-data" class="nav-link" data-scroll-target="#simulation-data"><span class="header-section-number">9.1.5</span> Simulation data</a></li>
+  <li><a href="#attention-mechanism-1" id="toc-attention-mechanism-1" class="nav-link" data-scroll-target="#attention-mechanism-1"><span class="header-section-number">9.1.3</span> Attention Mechanism</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">9.1.4</span> Example</a></li>
+  <li><a href="#attention-mechanism-steps-dot-product-attention" id="toc-attention-mechanism-steps-dot-product-attention" class="nav-link" data-scroll-target="#attention-mechanism-steps-dot-product-attention"><span class="header-section-number">9.1.5</span> Attention Mechanism Steps (Dot product attention)</a></li>
+  <li><a href="#simulation-data" id="toc-simulation-data" class="nav-link" data-scroll-target="#simulation-data"><span class="header-section-number">9.1.6</span> Simulation data</a></li>
   </ul></li>
   <li><a href="#transformer" id="toc-transformer" class="nav-link" data-scroll-target="#transformer"><span class="header-section-number">9.2</span> Transformer</a></li>
   </ul>
@@ -281,19 +289,29 @@ window.Quarto = {
 <li>Instead of relying on a fixed-length context vector from the encoder, the decoder computes a dynamic context vector by weighting the encoder’s hidden states based on their relevance to the current decoding step.</li>
 </ul>
 <section id="fixed-length-context-vector" class="level3" data-number="9.1.1">
-<h3 data-number="9.1.1" class="anchored" data-anchor-id="fixed-length-context-vector"><span class="header-section-number">9.1.1</span> Fixed-length context vector</h3>
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="fixed-length-context-vector"><span class="header-section-number">9.1.1</span> Fixed-length Context Vector</h3>
 <ul>
-<li>Information bottleneck
+<li>In traditional Seq2Seq models, the encoder compresses the entire input sequence into a <strong>single vector</strong> called the <strong>context vector</strong>, which the decoder uses to generate the output sequence.</li>
+</ul>
+<p><span class="math display">\[
+c = h_T \quad \text{or} \quad c = f(h_1, h_2, ..., h_T)
+\]</span></p>
 <ul>
-<li>Long input sequences result in the loss of critical details since all information is compressed into a single vector.</li>
+<li><p>This design introduces several limitations.</p></li>
+<li><p>Information Bottleneck</p>
+<ul>
+<li>All input information must be compressed into a single vector.</li>
+<li>For long sequences, important fine-grained details are lost during this compression.</li>
 </ul></li>
-<li>Vanishing context
+<li><p>Vanishing Context</p>
 <ul>
-<li>For longer sequences, earlier tokens in the input become less relevant in the compressed context vector.</li>
+<li>As the sequence length increases, <strong>earlier tokens</strong> have less influence on the final hidden state.</li>
+<li>This is linked to the <strong>vanishing gradient problem</strong> in RNNs.</li>
 </ul></li>
-<li>Difficulty in aligning input and output
+<li><p>Difficulty in Aligning Input and Output</p>
 <ul>
-<li>There’s no direct alignment between specific input tokens and the corresponding output tokens.</li>
+<li>There is <strong>no direct alignment</strong> between specific input tokens and their corresponding output tokens.</li>
+<li>The decoder must rely solely on the compressed context, without knowing which part of the input is relevant at each step.</li>
 </ul></li>
 </ul>
 <p><img src="images/attention-problem2.png" class="img-fluid"></p>
@@ -316,8 +334,37 @@ window.Quarto = {
 </ul></li>
 </ul>
 </section>
-<section id="example" class="level3" data-number="9.1.3">
-<h3 data-number="9.1.3" class="anchored" data-anchor-id="example"><span class="header-section-number">9.1.3</span> Example</h3>
+<section id="attention-mechanism-1" class="level3" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="attention-mechanism-1"><span class="header-section-number">9.1.3</span> Attention Mechanism</h3>
+<p>The <strong>attention mechanism</strong> solves the fixed-length bottleneck by allowing the decoder to dynamically focus on different parts of the encoder’s output for each generated token.</p>
+<section id="key-ideas" class="level4" data-number="9.1.3.1">
+<h4 data-number="9.1.3.1" class="anchored" data-anchor-id="key-ideas"><span class="header-section-number">9.1.3.1</span> Key Ideas</h4>
+<ul>
+<li><p>Dynamic Context</p>
+<ul>
+<li>The context vector ( c_t ) is <em>not fixed</em>.</li>
+<li>It is computed at each decoding step by taking a weighted sum of all encoder hidden states:</li>
+</ul>
+<p><span class="math display">\[
+c_t = \sum_i \alpha_{t,i} h_i
+\]</span></p></li>
+<li><p>Attention Weights Each weight ( _{t,i} ) measures the relevance between the current decoder state ( s_t ) (query) and encoder state ( h_i ) (key):</p>
+<p><span class="math display">\[
+\alpha_{t,i} = \text{softmax}(s_t^\top h_i)
+\]</span></p></li>
+<li><p>Better Handling of Long Sequences</p>
+<ul>
+<li>The decoder can “attend” to any part of the input regardless of sequence length.</li>
+</ul></li>
+<li><p>Alignment Between Input and Output</p>
+<ul>
+<li>Attention naturally aligns input and output tokens by highlighting relevant positions in the encoder states.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="example" class="level3" data-number="9.1.4">
+<h3 data-number="9.1.4" class="anchored" data-anchor-id="example"><span class="header-section-number">9.1.4</span> Example</h3>
 <pre><code>&lt;SOS&gt;MAGKL...&lt;EOS&gt;
 &lt;SOS&gt;MIAEE...&lt;EOS&gt;
 &lt;SOS&gt;MNNQK...&lt;EOS&gt;
@@ -330,8 +377,8 @@ window.Quarto = {
 </ul>
 <p><img src="images/attention1.png" class="img-fluid"></p>
 </section>
-<section id="attention-mechanism-steps-dot-product-attention" class="level3" data-number="9.1.4">
-<h3 data-number="9.1.4" class="anchored" data-anchor-id="attention-mechanism-steps-dot-product-attention"><span class="header-section-number">9.1.4</span> Attention Mechanism Steps (Dot product attention)</h3>
+<section id="attention-mechanism-steps-dot-product-attention" class="level3" data-number="9.1.5">
+<h3 data-number="9.1.5" class="anchored" data-anchor-id="attention-mechanism-steps-dot-product-attention"><span class="header-section-number">9.1.5</span> Attention Mechanism Steps (Dot product attention)</h3>
 <ul>
 <li>Alignment Scores
 <ul>
@@ -358,7 +405,7 @@ window.Quarto = {
 </ul></li>
 </ul>
 <p><img src="images/attention5.png" class="img-fluid"></p>
-<div id="cell-9" class="cell" data-execution_count="22">
+<div id="cell-10" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Example encoder outputs (keys and values)</span></span>
@@ -395,321 +442,468 @@ window.Quarto = {
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Attention Weights (Softmax):"</span>, attention_weights)</span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Context Vector:"</span>, context_vector)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Encoder Outputs (Keys and Values): [[ 0.19573384 -0.49648183  0.1824915   0.10484739 -1.58569094]
- [ 0.64890387  0.0082949   1.41048922 -0.47920967 -0.7364587 ]
- [ 0.78422808 -0.44381825  0.67551003  1.23725628  0.2371081 ]
- [ 0.51214269  0.40668439 -0.18241258  0.28852113  0.2699827 ]]
-Decoder Hidden State (Query): [ 0.40266189 -0.79767357  0.01391088  1.08446925  0.81412344]
-Attention Scores: [-0.69986078 -0.84496306  2.21399944  0.41197298]
-Scaled Attention Scores: [-0.31298726 -0.37787897  0.99013065  0.18423992]
-Attention Weights (Softmax): [0.1377016  0.12904966 0.50684584 0.2264029 ]
-Context Vector: [ 0.62412702 -0.20016879  0.50823324  0.64501603 -0.13208979]</code></pre>
+<pre><code>Encoder Outputs (Keys and Values): [[ 2.09627163 -1.76279278  0.99882147  0.22492187  1.04735607]
+ [-0.5296543   0.19867691  1.73006366 -0.34494114  1.56485007]
+ [-0.65192758  0.43828649  2.07320319  2.37364801  1.78454492]
+ [ 1.90204594  0.12969025 -0.66125988 -1.28542267 -1.80206957]]
+Decoder Hidden State (Query): [ 0.18195976 -0.87445266 -0.45824399 -1.00798729 -0.64143475]
+Attention Scores: [ 0.56668302 -1.71895354 -4.98919445  2.98730596]
+Scaled Attention Scores: [ 0.25342835 -0.76873939 -2.23123559  1.33596384]
+Attention Weights (Softmax): [0.22751457 0.08186295 0.01896415 0.67165833]
+Context Vector: [ 1.69873502 -0.28937749 -0.03594961 -0.79541552 -0.81014064]</code></pre>
 </div>
 </div>
 <p><img src="images/att1.png" class="img-fluid"></p>
 <p><img src="images/att1-1.png" class="img-fluid"></p>
 </section>
-<section id="simulation-data" class="level3" data-number="9.1.5">
-<h3 data-number="9.1.5" class="anchored" data-anchor-id="simulation-data"><span class="header-section-number">9.1.5</span> Simulation data</h3>
+<section id="simulation-data" class="level3" data-number="9.1.6">
+<h3 data-number="9.1.6" class="anchored" data-anchor-id="simulation-data"><span class="header-section-number">9.1.6</span> Simulation data</h3>
 <ul>
 <li>For the source sequence, insert two motif (RGD, ATL) in random amino acid sequence</li>
-<li>Target sequences are generated with patterns R –&gt; K, G –&gt; A for RGD motif, and A–&gt;V, T–&gt; for ATL motif, respectively</li>
+<li>Target sequences are generated with patterns R –&gt; K, G –&gt; A for RGD motif, and A–&gt;V, T–&gt; C for ATL motif, respectively</li>
 </ul>
-<div id="cell-13" class="cell" data-execution_count="39">
+<div id="cell-14" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset, DataLoader</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">3</span>  <span class="co"># Length of k-mers</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>num_sequences <span class="op">=</span> <span class="dv">100</span>  <span class="co"># Number of full amino acid sequences</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="dv">20</span>  <span class="co"># Length of each amino acid sequence (increased to accommodate two motifs)</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">10</span>  <span class="co"># Batch size for DataLoader</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Define amino acids</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>amino_acids <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"R"</span>, <span class="st">"N"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"Q"</span>, <span class="st">"E"</span>, <span class="st">"G"</span>, <span class="st">"H"</span>, <span class="st">"I"</span>, <span class="st">"L"</span>, <span class="st">"K"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"P"</span>, <span class="st">"S"</span>, <span class="st">"T"</span>, <span class="st">"W"</span>, <span class="st">"Y"</span>, <span class="st">"V"</span>]</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate random amino acid sequences</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_random_sequences_with_motifs(num_sequences, sequence_length):</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    sequences <span class="op">=</span> []</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sequences):</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        seq <span class="op">=</span> <span class="bu">list</span>(np.random.choice(amino_acids, size<span class="op">=</span>sequence_length))</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Insert biologically meaningful patterns (e.g., conserved motifs)</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(seq) <span class="op">&gt;</span> <span class="dv">10</span>:</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            seq[<span class="dv">5</span>:<span class="dv">8</span>] <span class="op">=</span> [<span class="st">"R"</span>, <span class="st">"G"</span>, <span class="st">"D"</span>]  <span class="co"># Motif 1</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            seq[<span class="dv">12</span>:<span class="dv">15</span>] <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"T"</span>, <span class="st">"L"</span>]  <span class="co"># Motif 2</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        sequences.append(<span class="st">""</span>.join(seq))</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sequences</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>random_sequences <span class="op">=</span> generate_random_sequences_with_motifs(num_sequences, sequence_length)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract k-mers from sequences</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_kmers(sequence, k):</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [sequence[i:i <span class="op">+</span> k] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(sequence) <span class="op">-</span> k <span class="op">+</span> <span class="dv">1</span>)]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>num_sequences <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Amino acids</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>amino_acids <span class="op">=</span> [<span class="st">"A"</span>,<span class="st">"R"</span>,<span class="st">"N"</span>,<span class="st">"D"</span>,<span class="st">"C"</span>,<span class="st">"Q"</span>,<span class="st">"E"</span>,<span class="st">"G"</span>,<span class="st">"H"</span>,<span class="st">"I"</span>,<span class="st">"L"</span>,<span class="st">"K"</span>,<span class="st">"M"</span>,<span class="st">"F"</span>,<span class="st">"P"</span>,<span class="st">"S"</span>,<span class="st">"T"</span>,<span class="st">"W"</span>,<span class="st">"Y"</span>,<span class="st">"V"</span>]</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Data generation</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_random_sequences_with_motifs(num_sequences, sequence_length):</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Make random AA sequences and insert two fixed motifs."""</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    sequences <span class="op">=</span> []</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sequences):</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        seq <span class="op">=</span> <span class="bu">list</span>(np.random.choice(amino_acids, size<span class="op">=</span>sequence_length))</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(seq) <span class="op">&gt;</span> <span class="dv">10</span>:</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            seq[<span class="dv">5</span>:<span class="dv">8</span>]  <span class="op">=</span> [<span class="st">"R"</span>,<span class="st">"G"</span>,<span class="st">"D"</span>]  <span class="co"># Motif 1</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>            seq[<span class="dv">12</span>:<span class="dv">15</span>] <span class="op">=</span> [<span class="st">"A"</span>,<span class="st">"T"</span>,<span class="st">"L"</span>] <span class="co"># Motif 2</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        sequences.append(<span class="st">""</span>.join(seq))</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sequences</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>random_sequences <span class="op">=</span> generate_random_sequences_with_motifs(num_sequences, sequence_length)</span>
 <span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>source_kmers <span class="op">=</span> [generate_kmers(seq, k) <span class="cf">for</span> seq <span class="kw">in</span> random_sequences]</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a biological transformation for the target sequences</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transform_with_evolution_two_motifs(kmers):</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    transformed_kmers <span class="op">=</span> []</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> kmer <span class="kw">in</span> kmers:</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="st">"RGD"</span> <span class="kw">in</span> kmer:</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>            transformed_kmers.append(kmer.replace(<span class="st">"R"</span>, <span class="st">"K"</span>).replace(<span class="st">"G"</span>, <span class="st">"A"</span>))  <span class="co"># Transformation for Motif 1</span></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="st">"ATL"</span> <span class="kw">in</span> kmer:</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>            transformed_kmers.append(kmer.replace(<span class="st">"A"</span>, <span class="st">"V"</span>).replace(<span class="st">"T"</span>, <span class="st">"C"</span>))  <span class="co"># Transformation for Motif 2</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>            transformed_kmers.append(kmer[::<span class="op">-</span><span class="dv">1</span>])  <span class="co"># Reverse non-conserved k-mers</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> transformed_kmers</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>target_kmers_with_evolution <span class="op">=</span> [transform_with_evolution_two_motifs(kmers) <span class="cf">for</span> kmers <span class="kw">in</span> source_kmers]</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_kmers(sequence, k):</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [sequence[i:i<span class="op">+</span>k] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(sequence)<span class="op">-</span>k<span class="op">+</span><span class="dv">1</span>)]</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>source_kmers <span class="op">=</span> [generate_kmers(seq, k) <span class="cf">for</span> seq <span class="kw">in</span> random_sequences]</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transform_with_evolution_two_motifs(kmers):</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> []</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> kmer <span class="kw">in</span> kmers:</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="st">"RGD"</span> <span class="kw">in</span> kmer:</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>            out.append(kmer.replace(<span class="st">"R"</span>,<span class="st">"K"</span>).replace(<span class="st">"G"</span>,<span class="st">"A"</span>))</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="st">"ATL"</span> <span class="kw">in</span> kmer:</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>            out.append(kmer.replace(<span class="st">"A"</span>,<span class="st">"V"</span>).replace(<span class="st">"T"</span>,<span class="st">"C"</span>))</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>            out.append(kmer[::<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span>
 <span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Build vocabulary for k-mers</span></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>unique_kmers <span class="op">=</span> <span class="bu">set</span>(kmer <span class="cf">for</span> seq <span class="kw">in</span> source_kmers <span class="op">+</span> target_kmers_with_evolution <span class="cf">for</span> kmer <span class="kw">in</span> seq)</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> {kmer: idx <span class="cf">for</span> idx, kmer <span class="kw">in</span> <span class="bu">enumerate</span>(unique_kmers)}</span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>vocab_size <span class="op">=</span> <span class="bu">len</span>(vocab)</span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Encode k-mers into indices</span></span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> encode_kmers(kmers, vocab):</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [vocab[kmer] <span class="cf">for</span> kmer <span class="kw">in</span> kmers]</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>encoded_source_sequences <span class="op">=</span> [encode_kmers(kmers, vocab) <span class="cf">for</span> kmers <span class="kw">in</span> source_kmers]</span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>encoded_target_with_evolution <span class="op">=</span> [encode_kmers(kmers, vocab) <span class="cf">for</span> kmers <span class="kw">in</span> target_kmers_with_evolution]</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Collate function for padding</span></span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> collate_batch(batch):</span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    source_batch, target_batch <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>batch)</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    src_lengths <span class="op">=</span> [<span class="bu">len</span>(seq) <span class="cf">for</span> seq <span class="kw">in</span> source_batch]</span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>    tgt_lengths <span class="op">=</span> [<span class="bu">len</span>(seq) <span class="cf">for</span> seq <span class="kw">in</span> target_batch]</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>    max_src_len <span class="op">=</span> <span class="bu">max</span>(src_lengths)</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>    max_tgt_len <span class="op">=</span> <span class="bu">max</span>(tgt_lengths)</span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>    padded_src <span class="op">=</span> torch.zeros(<span class="bu">len</span>(source_batch), max_src_len, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    padded_tgt <span class="op">=</span> torch.zeros(<span class="bu">len</span>(target_batch), max_tgt_len, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, seq <span class="kw">in</span> <span class="bu">enumerate</span>(source_batch):</span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>        padded_src[i, :<span class="bu">len</span>(seq)] <span class="op">=</span> torch.tensor(seq, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, seq <span class="kw">in</span> <span class="bu">enumerate</span>(target_batch):</span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>        padded_tgt[i, :<span class="bu">len</span>(seq)] <span class="op">=</span> torch.tensor(seq, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> padded_src, src_lengths, padded_tgt, tgt_lengths</span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Create datasets and dataloaders</span></span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqKmerDataset(Dataset):</span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, source_sequences, target_sequences):</span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.source_sequences <span class="op">=</span> source_sequences</span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.target_sequences <span class="op">=</span> target_sequences</span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.source_sequences)</span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.source_sequences[idx], <span class="va">self</span>.target_sequences[idx]</span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataset</span></span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>dataset_with_evolution <span class="op">=</span> Seq2SeqKmerDataset(encoded_source_sequences, encoded_target_with_evolution)</span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataloader</span></span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>dataloader_with_evolution <span class="op">=</span> DataLoader(dataset_with_evolution, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">True</span>, collate_fn<span class="op">=</span>collate_batch)</span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="co"># Example batch</span></span>
-<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> batch <span class="kw">in</span> dataloader_with_evolution:</span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>    src, src_lengths, tgt, tgt_lengths <span class="op">=</span> batch</span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Source batch shape:"</span>, src.shape)</span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Target batch shape:"</span>, tgt.shape)</span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Source lengths:"</span>, src_lengths)</span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Target lengths:"</span>, tgt_lengths)</span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span></span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Vocabulary size:"</span>, vocab_size)</span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Initial seuqence:"</span>, random_sequences[<span class="dv">0</span>])</span>
-<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Source k-mers:"</span>, source_kmers[<span class="dv">0</span>])</span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Target k-mers:"</span>, target_kmers_with_evolution[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>target_kmers <span class="op">=</span> [transform_with_evolution_two_motifs(kmers) <span class="cf">for</span> kmers <span class="kw">in</span> source_kmers]</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Vocabulary (with specials)</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>specials <span class="op">=</span> [<span class="st">"&lt;PAD&gt;"</span>, <span class="st">"&lt;SOS&gt;"</span>, <span class="st">"&lt;EOS&gt;"</span>]</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>unique_kmers <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">set</span>(k <span class="cf">for</span> seq <span class="kw">in</span> source_kmers <span class="op">+</span> target_kmers <span class="cf">for</span> k <span class="kw">in</span> seq))</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> {tok: i <span class="cf">for</span> i, tok <span class="kw">in</span> <span class="bu">enumerate</span>(specials)}</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>vocab.update({kmer: i<span class="op">+</span><span class="bu">len</span>(specials) <span class="cf">for</span> i, kmer <span class="kw">in</span> <span class="bu">enumerate</span>(unique_kmers)})</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>PAD, SOS, EOS <span class="op">=</span> vocab[<span class="st">"&lt;PAD&gt;"</span>], vocab[<span class="st">"&lt;SOS&gt;"</span>], vocab[<span class="st">"&lt;EOS&gt;"</span>]</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>vocab_size <span class="op">=</span> <span class="bu">len</span>(vocab)</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> encode_kmers(kmers, vocab):</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [vocab[k] <span class="cf">for</span> k <span class="kw">in</span> kmers]</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>encoded_src <span class="op">=</span> [encode_kmers(kmers, vocab) <span class="cf">for</span> kmers <span class="kw">in</span> source_kmers]</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>encoded_tgt <span class="op">=</span> [encode_kmers(kmers, vocab) <span class="cf">for</span> kmers <span class="kw">in</span> target_kmers]</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Decoder inputs/targets (shifted)</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>dec_inputs <span class="op">=</span> [[SOS] <span class="op">+</span> seq <span class="cf">for</span> seq <span class="kw">in</span> encoded_tgt]</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>dec_targets <span class="op">=</span> [seq <span class="op">+</span> [EOS] <span class="cf">for</span> seq <span class="kw">in</span> encoded_tgt]</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataset / Collate</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqKmerDataset(Dataset):</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, src_seqs, dec_inp, dec_tgt):</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.src <span class="op">=</span> src_seqs</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.din <span class="op">=</span> dec_inp</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.dtg <span class="op">=</span> dec_tgt</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.src)</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.src[idx], <span class="va">self</span>.din[idx], <span class="va">self</span>.dtg[idx]</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> collate_batch(batch):</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>    src_batch, din_batch, dtg_batch <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>batch)</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>    src_lens <span class="op">=</span> [<span class="bu">len</span>(s) <span class="cf">for</span> s <span class="kw">in</span> src_batch]</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>    din_lens <span class="op">=</span> [<span class="bu">len</span>(s) <span class="cf">for</span> s <span class="kw">in</span> din_batch]  <span class="co"># == dtg_lens</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    max_src <span class="op">=</span> <span class="bu">max</span>(src_lens)</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>    max_dec <span class="op">=</span> <span class="bu">max</span>(din_lens)</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>    src_pad <span class="op">=</span> torch.full((<span class="bu">len</span>(batch), max_src), PAD, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>    din_pad <span class="op">=</span> torch.full((<span class="bu">len</span>(batch), max_dec), PAD, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>    dtg_pad <span class="op">=</span> torch.full((<span class="bu">len</span>(batch), max_dec), PAD, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, s <span class="kw">in</span> <span class="bu">enumerate</span>(src_batch):</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>        src_pad[i, :<span class="bu">len</span>(s)] <span class="op">=</span> torch.tensor(s, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, s <span class="kw">in</span> <span class="bu">enumerate</span>(din_batch):</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>        din_pad[i, :<span class="bu">len</span>(s)] <span class="op">=</span> torch.tensor(s, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, s <span class="kw">in</span> <span class="bu">enumerate</span>(dtg_batch):</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>        dtg_pad[i, :<span class="bu">len</span>(s)] <span class="op">=</span> torch.tensor(s, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> src_pad, torch.tensor(src_lens), din_pad, dtg_pad, torch.tensor(din_lens)</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataloader &amp; sanity check</span></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> Seq2SeqKmerDataset(encoded_src, dec_inputs, dec_targets)</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>loader  <span class="op">=</span> DataLoader(dataset, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">True</span>, collate_fn<span class="op">=</span>collate_batch)</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>src, src_lens, din, dtg, dec_lens <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(loader))</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Vocabulary size:"</span>, vocab_size)</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Source batch shape:"</span>, src.shape)      <span class="co"># (B, S_src)</span></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decoder input shape:"</span>, din.shape)     <span class="co"># (B, S_tgt+1)</span></span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decoder target shape:"</span>, dtg.shape)    <span class="co"># (B, S_tgt+1)</span></span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Source lengths:"</span>, src_lens.tolist())</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decoder lengths:"</span>, dec_lens.tolist())</span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Initial sequence:"</span>, random_sequences[<span class="dv">0</span>])</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Source k-mers[0]:"</span>, source_kmers[<span class="dv">0</span>][:<span class="dv">10</span>], <span class="st">"..."</span>)</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Target k-mers[0]:"</span>, target_kmers[<span class="dv">0</span>][:<span class="dv">10</span>], <span class="st">"..."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Source batch shape: torch.Size([10, 18])
-Target batch shape: torch.Size([10, 18])
+<pre><code>Vocabulary size: 2084
+Source batch shape: torch.Size([10, 18])
+Decoder input shape: torch.Size([10, 19])
+Decoder target shape: torch.Size([10, 19])
 Source lengths: [18, 18, 18, 18, 18, 18, 18, 18, 18, 18]
-Target lengths: [18, 18, 18, 18, 18, 18, 18, 18, 18, 18]
-Vocabulary size: 2105
-Initial seuqence: PQFSNRGDTVFRATLDASTH
-Source k-mers: ['PQF', 'QFS', 'FSN', 'SNR', 'NRG', 'RGD', 'GDT', 'DTV', 'TVF', 'VFR', 'FRA', 'RAT', 'ATL', 'TLD', 'LDA', 'DAS', 'AST', 'STH']
-Target k-mers: ['FQP', 'SFQ', 'NSF', 'RNS', 'GRN', 'KAD', 'TDG', 'VTD', 'FVT', 'RFV', 'ARF', 'TAR', 'VCL', 'DLT', 'ADL', 'SAD', 'TSA', 'HTS']</code></pre>
+Decoder lengths: [19, 19, 19, 19, 19, 19, 19, 19, 19, 19]
+Initial sequence: TCCYHRGDLILVATLFPLLV
+Source k-mers[0]: ['TCC', 'CCY', 'CYH', 'YHR', 'HRG', 'RGD', 'GDL', 'DLI', 'LIL', 'ILV'] ...
+Target k-mers[0]: ['CCT', 'YCC', 'HYC', 'RHY', 'GRH', 'KAD', 'LDG', 'ILD', 'LIL', 'VLI'] ...</code></pre>
 </div>
 </div>
-<div id="cell-14" class="cell" data-execution_count="46">
+<div id="cell-15" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DotProductAttention(nn.Module):</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(DotProductAttention, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, hidden, encoder_outputs):</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Ensure hidden is [batch_size, hidden_dim * 2]</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> hidden.dim() <span class="op">==</span> <span class="dv">2</span>:  <span class="co"># [batch_size, hidden_dim * 2]</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            hidden <span class="op">=</span> hidden.unsqueeze(<span class="dv">1</span>)  <span class="co"># [batch_size, 1, hidden_dim * 2]</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Dot-product attention where query comes from decoder hidden (dim=H)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">    and keys/values are encoder outputs (dim=2H). We project query -&gt; 2H.</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, dec_dim: <span class="bu">int</span>, enc_dim: <span class="bu">int</span>):</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.q_proj <span class="op">=</span> nn.Linear(dec_dim, enc_dim, bias<span class="op">=</span><span class="va">False</span>)  <span class="co"># H -&gt; 2H</span></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute dot-product scores</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        scores <span class="op">=</span> torch.bmm(encoder_outputs, hidden.transpose(<span class="dv">1</span>, <span class="dv">2</span>)).squeeze(<span class="dv">2</span>)  <span class="co"># [batch_size, seq_len]</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute attention weights</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        attention_weights <span class="op">=</span> F.softmax(scores, dim<span class="op">=</span><span class="dv">1</span>)  <span class="co"># [batch_size, seq_len]</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute context vector as weighted sum of encoder outputs</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        context_vector <span class="op">=</span> torch.bmm(attention_weights.unsqueeze(<span class="dv">1</span>), encoder_outputs)  <span class="co"># [batch_size, 1, hidden_dim * 2]</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> context_vector.squeeze(<span class="dv">1</span>), attention_weights  <span class="co"># [batch_size, hidden_dim * 2], [batch_size, seq_len]</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqEncoder(nn.Module):</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, embedding_dim, hidden_dim):</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(Seq2SeqEncoder, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embedding <span class="op">=</span> nn.Embedding(vocab_size, embedding_dim)</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.lstm <span class="op">=</span> nn.LSTM(embedding_dim, hidden_dim, batch_first<span class="op">=</span><span class="va">True</span>, bidirectional<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, dec_hidden, encoder_outputs, src_mask<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">        dec_hidden: (B, H)          # current decoder hidden (query)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">        encoder_outputs: (B, S, 2H) # keys/values</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">        src_mask: optional (B, S) boolean, True=keep, False=mask</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">        returns:</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">          context: (B, 2H)</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co">          attn_weights: (B, S)</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># project query to encoder dim</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        q <span class="op">=</span> <span class="va">self</span>.q_proj(dec_hidden).unsqueeze(<span class="dv">2</span>)          <span class="co"># (B, 2H, 1)</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># scores = K · q</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Batch Matrix Multiplication (B, S, 2H) @ (B, 2H, 1) -&gt; (B, S, 1)</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        scores <span class="op">=</span> torch.bmm(encoder_outputs, q).squeeze(<span class="dv">2</span>) <span class="co"># (B, S)</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> src_mask <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>            scores <span class="op">=</span> scores.masked_fill(<span class="op">~</span>src_mask, <span class="bu">float</span>(<span class="st">'-inf'</span>))</span>
 <span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x, lengths):</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Embed the input sequences</span></span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        embedded <span class="op">=</span> <span class="va">self</span>.embedding(x)  <span class="co"># [batch_size, seq_len, embedding_dim]</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        attn_weights <span class="op">=</span> F.softmax(scores, dim<span class="op">=</span><span class="dv">1</span>)           <span class="co"># (B, S)</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        context <span class="op">=</span> torch.bmm(attn_weights.unsqueeze(<span class="dv">1</span>), encoder_outputs).squeeze(<span class="dv">1</span>)  <span class="co"># (B, 2H)</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> context, attn_weights</span>
 <span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pack padded sequences for LSTM</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>        packed_embedded <span class="op">=</span> nn.utils.rnn.pack_padded_sequence(embedded, lengths, batch_first<span class="op">=</span><span class="va">True</span>, enforce_sorted<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Bidirectional LSTM</span></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>        packed_output, (hidden, cell) <span class="op">=</span> <span class="va">self</span>.lstm(packed_embedded)</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Unpack LSTM outputs</span></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>        encoder_outputs, _ <span class="op">=</span> nn.utils.rnn.pad_packed_sequence(packed_output, batch_first<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Concatenate hidden states from both directions</span></span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>        hidden <span class="op">=</span> torch.cat((hidden[<span class="op">-</span><span class="dv">2</span>], hidden[<span class="op">-</span><span class="dv">1</span>]), dim<span class="op">=</span><span class="dv">1</span>)  <span class="co"># [batch_size, hidden_dim * 2]</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> encoder_outputs, hidden</span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqDecoderWithAttention(nn.Module):</span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, embedding_dim, hidden_dim):</span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(Seq2SeqDecoderWithAttention, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embedding <span class="op">=</span> nn.Embedding(vocab_size, embedding_dim)</span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.lstm <span class="op">=</span> nn.LSTM(embedding_dim <span class="op">+</span> hidden_dim <span class="op">*</span> <span class="dv">2</span>, hidden_dim, batch_first<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc <span class="op">=</span> nn.Linear(hidden_dim <span class="op">*</span> <span class="dv">2</span> <span class="op">+</span> hidden_dim, vocab_size)</span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.attention <span class="op">=</span> DotProductAttention()</span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, input_token, hidden, encoder_outputs):</span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Embed the input token</span></span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>        embedded <span class="op">=</span> <span class="va">self</span>.embedding(input_token).unsqueeze(<span class="dv">1</span>)  <span class="co"># [batch_size, 1, embedding_dim]</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqEncoder(nn.Module):</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, embedding_dim, hidden_dim):</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embedding <span class="op">=</span> nn.Embedding(vocab_size, embedding_dim)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.lstm <span class="op">=</span> nn.LSTM(embedding_dim, hidden_dim, batch_first<span class="op">=</span><span class="va">True</span>, bidirectional<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x, lengths):</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co">        x: (B, S)</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="co">        lengths: (B,) CPU tensor/list of lengths</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="co">        returns:</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="co">          encoder_outputs: (B, S, 2H)</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="co">          (h_fused, c_fused): each (B, 2H) before bridging</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>        emb <span class="op">=</span> <span class="va">self</span>.embedding(x)                                        <span class="co"># (B, S, E)</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>        packed <span class="op">=</span> nn.utils.rnn.pack_padded_sequence(emb, lengths.cpu(), batch_first<span class="op">=</span><span class="va">True</span>, enforce_sorted<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>        packed_out, (h, c) <span class="op">=</span> <span class="va">self</span>.lstm(packed)</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>        enc_out, _ <span class="op">=</span> nn.utils.rnn.pad_packed_sequence(packed_out, batch_first<span class="op">=</span><span class="va">True</span>)  <span class="co"># (B, S, 2H)</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>        <span class="co"># concat last-layer forward/backward states -&gt; (B, 2H)</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>        h_cat <span class="op">=</span> torch.cat((h[<span class="op">-</span><span class="dv">2</span>], h[<span class="op">-</span><span class="dv">1</span>]), dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>        c_cat <span class="op">=</span> torch.cat((c[<span class="op">-</span><span class="dv">2</span>], c[<span class="op">-</span><span class="dv">1</span>]), dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> enc_out, (h_cat, c_cat)</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Ensure hidden matches encoder_outputs dimensions</span></span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> hidden.dim() <span class="op">==</span> <span class="dv">3</span>:  <span class="co"># Handle multi-layer LSTM</span></span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>            hidden <span class="op">=</span> hidden.transpose(<span class="dv">0</span>, <span class="dv">1</span>).contiguous().view(hidden.size(<span class="dv">1</span>), <span class="op">-</span><span class="dv">1</span>)  <span class="co"># [batch_size, hidden_dim * 2]</span></span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute attention context vector</span></span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>        context_vector, attention_weights <span class="op">=</span> <span class="va">self</span>.attention(hidden, encoder_outputs)</span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Concatenate embedded input and context vector</span></span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>        lstm_input <span class="op">=</span> torch.cat((embedded, context_vector.unsqueeze(<span class="dv">1</span>)), dim<span class="op">=</span><span class="dv">2</span>)  <span class="co"># [batch_size, 1, embedding_dim + hidden_dim * 2]</span></span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pass through the LSTM</span></span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>        output, (hidden, _) <span class="op">=</span> <span class="va">self</span>.lstm(lstm_input)</span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Predict the next token</span></span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>        prediction <span class="op">=</span> <span class="va">self</span>.fc(torch.cat((output.squeeze(<span class="dv">1</span>), context_vector), dim<span class="op">=</span><span class="dv">1</span>))  <span class="co"># [batch_size, vocab_size]</span></span>
-<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> prediction, hidden, attention_weights</span>
-<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqWithAttention(nn.Module):</span>
-<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, embedding_dim, hidden_dim):</span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(Seq2SeqWithAttention, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encoder <span class="op">=</span> Seq2SeqEncoder(vocab_size, embedding_dim, hidden_dim)</span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.decoder <span class="op">=</span> Seq2SeqDecoderWithAttention(vocab_size, embedding_dim, hidden_dim)</span>
-<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, src, src_lengths, tgt, teacher_forcing_ratio<span class="op">=</span><span class="fl">0.5</span>):</span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>        encoder_outputs, hidden <span class="op">=</span> <span class="va">self</span>.encoder(src, src_lengths)</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqDecoderWithAttention(nn.Module):</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, embedding_dim, hidden_dim):</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="co">        hidden_dim = H (decoder), encoder outputs have 2H.</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embedding <span class="op">=</span> nn.Embedding(vocab_size, embedding_dim)</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.lstm <span class="op">=</span> nn.LSTM(embedding_dim <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>hidden_dim, hidden_dim, batch_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.attn <span class="op">=</span> DotProductAttention(dec_dim<span class="op">=</span>hidden_dim, enc_dim<span class="op">=</span><span class="dv">2</span><span class="op">*</span>hidden_dim)</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc <span class="op">=</span> nn.Linear(hidden_dim <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>hidden_dim, vocab_size)  <span class="co"># [dec_out; context] -&gt; vocab</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, input_token, prev_state, encoder_outputs, src_mask<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="co">        input_token: (B,)  current decoder input ids</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a><span class="co">        prev_state: (h, c) where h,c: (1, B, H)</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="co">        encoder_outputs: (B, S, 2H)</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="co">        src_mask: (B, S) boolean mask (optional)</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="co">        returns:</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="co">          logits: (B, V)</span></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="co">          state: (h, c)</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="co">          attn_w: (B, S)</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>        h_prev, c_prev <span class="op">=</span> prev_state  <span class="co"># each (1, B, H)</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>        emb <span class="op">=</span> <span class="va">self</span>.embedding(input_token).unsqueeze(<span class="dv">1</span>)     <span class="co"># (B, 1, E)</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>        <span class="co"># attention uses current decoder hidden (B, H)</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>        query <span class="op">=</span> h_prev[<span class="op">-</span><span class="dv">1</span>]                                 <span class="co"># (B, H)</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>        context, attn_w <span class="op">=</span> <span class="va">self</span>.attn(query, encoder_outputs, src_mask<span class="op">=</span>src_mask)  <span class="co"># (B, 2H), (B,S)</span></span>
 <span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>        batch_size <span class="op">=</span> tgt.size(<span class="dv">0</span>)</span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>        tgt_len <span class="op">=</span> tgt.size(<span class="dv">1</span>)</span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>        outputs <span class="op">=</span> torch.zeros(batch_size, tgt_len, vocab_size).to(src.device)</span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>        input_token <span class="op">=</span> tgt[:, <span class="dv">0</span>]  <span class="co"># Start token</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>        lstm_in <span class="op">=</span> torch.cat([emb, context.unsqueeze(<span class="dv">1</span>)], dim<span class="op">=</span><span class="dv">2</span>)  <span class="co"># (B,1,E+2H)</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>        out, (h, c) <span class="op">=</span> <span class="va">self</span>.lstm(lstm_in, (h_prev, c_prev))       <span class="co"># out: (B,1,H)</span></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>        logits <span class="op">=</span> <span class="va">self</span>.fc(torch.cat([out.squeeze(<span class="dv">1</span>), context], dim<span class="op">=</span><span class="dv">1</span>))  <span class="co"># (B, V)</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> logits, (h, c), attn_w</span>
 <span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, tgt_len):</span>
-<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>            output, hidden, attention_weights <span class="op">=</span> <span class="va">self</span>.decoder(input_token, hidden, encoder_outputs)</span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>            outputs[:, t, :] <span class="op">=</span> output</span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>            teacher_force <span class="op">=</span> torch.rand(<span class="dv">1</span>).item() <span class="op">&lt;</span> teacher_forcing_ratio</span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>            input_token <span class="op">=</span> tgt[:, t] <span class="cf">if</span> teacher_force <span class="cf">else</span> output.argmax(<span class="dv">1</span>)</span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> outputs, attention_weights</span>
-<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="cell-15" class="cell" data-execution_count="47">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model parameters</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>embedding_dim <span class="op">=</span> <span class="dv">16</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>hidden_dim <span class="op">=</span> <span class="dv">32</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">0.001</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize model, optimizer, and loss function</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Seq2SeqWithAttention(vocab_size, embedding_dim, hidden_dim).to(device)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.Adam(model.parameters(), lr<span class="op">=</span>learning_rate)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.CrossEntropyLoss(ignore_index<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Training loop</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    model.train()</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    total_loss <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch <span class="kw">in</span> dataloader_with_evolution:</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        src, src_lengths, tgt, tgt_lengths <span class="op">=</span> batch</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        src, tgt <span class="op">=</span> src.to(device), tgt.to(device)</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        outputs, _ <span class="op">=</span> model(src, src_lengths, tgt)</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Reshape outputs and compute loss</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        outputs <span class="op">=</span> outputs[:, <span class="dv">1</span>:].reshape(<span class="op">-</span><span class="dv">1</span>, vocab_size)  <span class="co"># Skip &lt;SOS&gt;</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        tgt <span class="op">=</span> tgt[:, <span class="dv">1</span>:].reshape(<span class="op">-</span><span class="dv">1</span>)  <span class="co"># Skip &lt;SOS&gt;</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> criterion(outputs, tgt)</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">+=</span> loss.item()</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>epochs<span class="sc">}</span><span class="ss">, Loss: </span><span class="sc">{</span>total_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>RuntimeError: Expected size for first two dimensions of batch2 tensor to be: [10, 64] but got: [10, 32].</code></pre>
-</div>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Seq2SeqWithAttention(nn.Module):</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, vocab_size, embedding_dim, hidden_dim):</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.vocab_size <span class="op">=</span> vocab_size</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.hidden_dim <span class="op">=</span> hidden_dim</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encoder <span class="op">=</span> Seq2SeqEncoder(vocab_size, embedding_dim, hidden_dim)</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.decoder <span class="op">=</span> Seq2SeqDecoderWithAttention(vocab_size, embedding_dim, hidden_dim)</span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>        <span class="co"># bridge 2H (encoder) -&gt; H (decoder) for initial states</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bridge_h <span class="op">=</span> nn.Linear(<span class="dv">2</span><span class="op">*</span>hidden_dim, hidden_dim)</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bridge_c <span class="op">=</span> nn.Linear(<span class="dv">2</span><span class="op">*</span>hidden_dim, hidden_dim)</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> init_decoder_state(<span class="va">self</span>, enc_hc):</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>        h_cat, c_cat <span class="op">=</span> enc_hc                           <span class="co"># each (B, 2H)</span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>        h0 <span class="op">=</span> torch.tanh(<span class="va">self</span>.bridge_h(h_cat)).unsqueeze(<span class="dv">0</span>)  <span class="co"># (1, B, H)</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>        c0 <span class="op">=</span> torch.tanh(<span class="va">self</span>.bridge_c(c_cat)).unsqueeze(<span class="dv">0</span>)  <span class="co"># (1, B, H)</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (h0, c0)</span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, src, src_lengths, dec_inputs, teacher_forcing_ratio<span class="op">=</span><span class="fl">0.5</span>, src_mask<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="co">        src: (B,S_src)</span></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="co">        src_lengths: (B,)</span></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="co">        dec_inputs: (B,S_tgt)  # must start with &lt;SOS&gt;</span></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="co">        returns:</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="co">          logits: (B,S_tgt,V)</span></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="co">          attn_list: list of length S_tgt with (B,S_src) tensors</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>        device <span class="op">=</span> src.device</span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>        B, T <span class="op">=</span> dec_inputs.size()</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>        enc_out, enc_hc <span class="op">=</span> <span class="va">self</span>.encoder(src, src_lengths)      <span class="co"># enc_out: (B,S,2H)</span></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>        dec_state <span class="op">=</span> <span class="va">self</span>.init_decoder_state(enc_hc)           <span class="co"># (h0,c0)</span></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>        outputs <span class="op">=</span> torch.zeros(B, T, <span class="va">self</span>.vocab_size, device<span class="op">=</span>device)</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>        attn_list <span class="op">=</span> []</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>        <span class="co"># first input token is &lt;SOS&gt;</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>        inp <span class="op">=</span> dec_inputs[:, <span class="dv">0</span>]</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, T):</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>            logits, dec_state, attn_w <span class="op">=</span> <span class="va">self</span>.decoder(inp, dec_state, enc_out, src_mask<span class="op">=</span>src_mask)</span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>            outputs[:, t, :] <span class="op">=</span> logits</span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>            attn_list.append(attn_w)</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>            teacher_force <span class="op">=</span> torch.rand(<span class="dv">1</span>, device<span class="op">=</span>device).item() <span class="op">&lt;</span> teacher_forcing_ratio</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>            inp <span class="op">=</span> dec_inputs[:, t] <span class="cf">if</span> teacher_force <span class="cf">else</span> logits.argmax(dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> outputs, attn_list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-16" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Model/training hyperparams</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>embedding_dim <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>hidden_dim <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">1e-3</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>teacher_forcing_ratio <span class="op">=</span> <span class="fl">0.5</span>   <span class="co"># 필요 시 조정</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># PAD, SOS, EOS, vocab_size, loader, Seq2SeqWithAttention</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Seq2SeqWithAttention(vocab_size, embedding_dim, hidden_dim).to(device)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.Adam(model.parameters(), lr<span class="op">=</span>learning_rate)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.CrossEntropyLoss(ignore_index<span class="op">=</span>PAD)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Training loop</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, epochs <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    model.train()</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    total_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    num_batches <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch <span class="kw">in</span> loader:</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># batch: (src, src_lens, dec_in, dec_tg, dec_lens)</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        src, src_lens, dec_in, dec_tg, dec_lens <span class="op">=</span> batch</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Move tensors</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>        src <span class="op">=</span> src.to(device)                <span class="co"># (B, S_src)</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>        dec_in <span class="op">=</span> dec_in.to(device)          <span class="co"># (B, S_tgt)</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>        dec_tg <span class="op">=</span> dec_tg.to(device)          <span class="co"># (B, S_tgt)</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Optional source mask for attention</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>        src_mask <span class="op">=</span> (src <span class="op">!=</span> PAD)             <span class="co"># (B, S_src), True=valid</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Forward</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        logits, attn_list <span class="op">=</span> model(</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>            src<span class="op">=</span>src,</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>            src_lengths<span class="op">=</span>src_lens,          <span class="co"># encoder 내부에서 .cpu() 사용</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>            dec_inputs<span class="op">=</span>dec_in,</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>            teacher_forcing_ratio<span class="op">=</span>teacher_forcing_ratio,</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>            src_mask<span class="op">=</span>src_mask <span class="co"># prevent padding from attending</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>        )  <span class="co"># logits: (B, T, V)</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Shift: remove t=0 (&lt;SOS&gt;) for loss</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># logits[:, 1:, :] vs targets[:, 1:]</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>        B, T, V <span class="op">=</span> logits.size()</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>        logits_flat <span class="op">=</span> logits[:, <span class="dv">1</span>:, :].contiguous().view(<span class="op">-</span><span class="dv">1</span>, V)  <span class="co"># ((B*(T-1)), V)</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>        targets_flat <span class="op">=</span> dec_tg[:, <span class="dv">1</span>:].contiguous().view(<span class="op">-</span><span class="dv">1</span>)       <span class="co"># (B*(T-1),)</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> criterion(logits_flat, targets_flat)</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># (선택) gradient clipping</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>        num_batches <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>    avg_loss <span class="op">=</span> total_loss <span class="op">/</span> <span class="bu">max</span>(<span class="dv">1</span>, num_batches)</span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>epochs<span class="sc">}</span><span class="ss"> - Loss: </span><span class="sc">{</span>avg_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/10 - Loss: 7.6287
+Epoch 2/10 - Loss: 7.5407
+Epoch 3/10 - Loss: 7.3603
+Epoch 4/10 - Loss: 6.9264
+Epoch 5/10 - Loss: 6.4365
+Epoch 6/10 - Loss: 6.3054
+Epoch 7/10 - Loss: 6.2212
+Epoch 8/10 - Loss: 6.1756
+Epoch 9/10 - Loss: 6.1285
+Epoch 10/10 - Loss: 6.0850</code></pre>
+</div>
+</div>
+<div id="cell-17" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_attention(attention_weights, input_sequence, output_sequence):</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    plt.imshow(attention_weights.cpu().detach().numpy(), cmap<span class="op">=</span><span class="st">"viridis"</span>, aspect<span class="op">=</span><span class="st">"auto"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    plt.colorbar()</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    plt.xticks(<span class="bu">range</span>(<span class="bu">len</span>(input_sequence)), input_sequence, rotation<span class="op">=</span><span class="dv">90</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    plt.yticks(<span class="bu">range</span>(<span class="bu">len</span>(output_sequence)), output_sequence)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">"Attention Weights"</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Input Sequence"</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Output Sequence"</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Example visualization during inference</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>src_example, src_len_example, tgt_example, tgt_len_example <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(dataloader_with_evolution))</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>src_example <span class="op">=</span> src_example.to(device)</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>tgt_example <span class="op">=</span> tgt_example.to(device)</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    outputs, attention_weights <span class="op">=</span> model(src_example, src_len_example, tgt_example, teacher_forcing_ratio<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    plot_attention(</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        attention_weights[<span class="dv">0</span>],  <span class="co"># Attention weights for the first sequence in the batch</span></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        [<span class="bu">list</span>(vocab.keys())[<span class="bu">list</span>(vocab.values()).index(idx)] <span class="cf">for</span> idx <span class="kw">in</span> src_example[<span class="dv">0</span>].cpu().numpy()],</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        [<span class="bu">list</span>(vocab.keys())[<span class="bu">list</span>(vocab.values()).index(idx)] <span class="cf">for</span> idx <span class="kw">in</span> tgt_example[<span class="dv">0</span>].cpu().numpy()]</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_attention_matrix(attn_matrix, input_tokens, output_tokens, title<span class="op">=</span><span class="st">"Attention Weights"</span>):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">    attn_matrix: (T_out-1, S_src) numpy array</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">    input_tokens: list[str] of length S_src (no PAD)</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">    output_tokens: list[str] of length T_out-1 (no &lt;SOS&gt;)</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    plt.imshow(attn_matrix, aspect<span class="op">=</span><span class="st">"auto"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    plt.colorbar()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    plt.xticks(<span class="bu">range</span>(<span class="bu">len</span>(input_tokens)), input_tokens, rotation<span class="op">=</span><span class="dv">90</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    plt.yticks(<span class="bu">range</span>(<span class="bu">len</span>(output_tokens)), output_tokens)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    plt.title(title)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Input Sequence (source k-mers)"</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Output Sequence (target tokens)"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 샘플 배치에서 시각화 ---</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 우리 파이프라인 기준: loader가 (src, src_lens, dec_in, dec_tg, dec_lens)를 반환</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>src_example, src_lens_example, dec_in_example, dec_tg_example, dec_lens_example <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(loader))</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>src_example <span class="op">=</span> src_example.to(device)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>dec_in_example <span class="op">=</span> dec_in_example.to(device)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>dec_tg_example <span class="op">=</span> dec_tg_example.to(device)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># vocab 역매핑</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>inv_vocab <span class="op">=</span> {idx: tok <span class="cf">for</span> tok, idx <span class="kw">in</span> vocab.items()}</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 선택: 패딩 마스크 사용(권장)</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    src_mask_example <span class="op">=</span> (src_example <span class="op">!=</span> PAD)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># teacher forcing 0으로 두고 디코딩</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    logits, attn_list <span class="op">=</span> model(</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        src<span class="op">=</span>src_example,</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        src_lengths<span class="op">=</span>src_lens_example,   <span class="co"># encoder 내부에서 .cpu() 처리</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        dec_inputs<span class="op">=</span>dec_in_example,</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        teacher_forcing_ratio<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        src_mask<span class="op">=</span>src_mask_example</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 어텐션 행렬 만들기 ----</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co"># attn_list: 길이 (T_out-1) 리스트, 각 원소가 (B, S_src)</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 첫 번째 배치 샘플만 시각화</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>attn_matrix <span class="op">=</span> torch.stack([aw[<span class="dv">0</span>] <span class="cf">for</span> aw <span class="kw">in</span> attn_list], dim<span class="op">=</span><span class="dv">0</span>).cpu().numpy()  <span class="co"># (T_out-1, S_src)</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 라벨(토큰) 구성: PAD/&lt;SOS&gt; 제외하고 실제 길이만 사용 ----</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>S_src <span class="op">=</span> <span class="bu">int</span>(src_lens_example[b].item())</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>T_dec <span class="op">=</span> <span class="bu">int</span>(dec_lens_example[b].item())  <span class="co"># dec_in/dec_tg 길이 동일</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 입력 토큰: 소스에서 유효 길이만</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>input_tokens <span class="op">=</span> [inv_vocab[<span class="bu">int</span>(t)] <span class="cf">for</span> t <span class="kw">in</span> src_example[b, :S_src].cpu().tolist()]</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="co"># 출력 토큰: &lt;SOS&gt;를 제외한 정답 토큰들 (dec_tg는 끝에 &lt;EOS&gt; 포함)</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>output_tokens <span class="op">=</span> [inv_vocab[<span class="bu">int</span>(t)] <span class="cf">for</span> t <span class="kw">in</span> dec_tg_example[b, <span class="dv">1</span>:T_dec].cpu().tolist()]  <span class="co"># 길이 = T_out-1</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 크기 일치 확인 (보통 일치하지만, 방어적으로 min으로 자름) ----</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co"># attn_matrix shape = (len(output_tokens), len(input_tokens)) 이어야 함</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>attn_matrix <span class="op">=</span> attn_matrix[:<span class="bu">len</span>(output_tokens), :<span class="bu">len</span>(input_tokens)]</span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 플로팅 ----</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>plot_attention_matrix(attn_matrix, input_tokens, output_tokens, title<span class="op">=</span><span class="st">"Attention Weights (sample 0)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="day8_attention_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
 </section>
@@ -1139,6 +1333,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./kaist_hw1.html" class="pagination-link" aria-label="HW1">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">HW1</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
