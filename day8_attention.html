@@ -418,7 +418,7 @@ c_t = \sum_i \alpha_{t,i} h_i
 </ul></li>
 </ul>
 <p><img src="images/attention.png" class="img-fluid"></p>
-<div id="cell-11" class="cell" data-execution_count="37">
+<div id="cell-11" class="cell" data-execution_count="44">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Example encoder outputs (keys and values)</span></span>
@@ -455,15 +455,15 @@ c_t = \sum_i \alpha_{t,i} h_i
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Attention Weights (Softmax):"</span>, attention_weights)</span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Context Vector:"</span>, context_vector)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Encoder Outputs (Keys and Values): [[ 0.30962238 -1.22155918  0.90155944  1.05228082 -0.4054248 ]
- [ 1.26865193 -0.90169832 -2.03547086  0.96450162  0.01972147]
- [-0.27558512  1.0251221   1.02945028  0.24267249 -0.5731709 ]
- [ 1.12332483 -1.68615437  1.7009695  -0.62422869  0.87135365]]
-Decoder Hidden State (Query): [ 0.91377301  0.48043807 -1.24283583 -0.51323829  0.18869329]
-Attention Scores: [-2.04102109  2.76450795 -1.27145457 -1.41285803]
-Scaled Attention Scores: [-0.91277238  1.23632554 -0.56861177 -0.63184932]
-Attention Weights (Softmax): [0.08121976 0.69663145 0.11458526 0.10756353]
-Context Vector: [ 0.99818107 -0.79127098 -1.04382646  0.7180306   0.00885903]</code></pre>
+<pre><code>Encoder Outputs (Keys and Values): [[-1.97628723 -0.49550066 -0.07627168 -1.50952524  0.8605617 ]
+ [-1.46537992 -0.06623029  1.64805089 -0.31390741 -1.79840795]
+ [-0.6832564   0.48039745 -0.72635226  0.59668384 -0.30876552]
+ [-1.78401374  1.59069848  1.31990247  0.25969989  1.12070123]]
+Decoder Hidden State (Query): [ 1.60975157 -0.73172626  1.26205092 -0.134268    1.98933803]
+Attention Scores: [-1.00039032 -3.76600465 -3.06244056 -0.17540643]
+Scaled Attention Scores: [-0.44738815 -1.68420848 -1.36956505 -0.07844414]
+Attention Weights (Softmax): [0.31906426 0.09262621 0.12687668 0.46143285]
+Context Vector: [-1.67618705  0.63072055  0.64520633 -0.31517228  0.58594798]</code></pre>
 </div>
 </div>
 <p><img src="images/att1.png" class="img-fluid"></p>
@@ -549,7 +549,7 @@ Context Vector: [ 0.99818107 -0.79127098 -1.04382646  0.7180306   0.00885903]</c
 <li>Logits: <code>(B, S_tgt, V)</code></li>
 <li>Attention weights: <code>(B, S_src)</code> - probability distribution over source tokens</li>
 </ul>
-<div id="cell-16" class="cell" data-execution_count="38">
+<div id="cell-16" class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset, DataLoader</span>
@@ -675,18 +675,18 @@ Context Vector: [ 0.99818107 -0.79127098 -1.04382646  0.7180306   0.00885903]</c
 <span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Vocabulary size: 4478
+<pre><code>Vocabulary size: 4452
 Source batch shape: torch.Size([10, 18])
 Decoder input shape: torch.Size([10, 19])
 Decoder target shape: torch.Size([10, 19])
 Source lengths: [18, 18, 18, 18, 18, 18, 18, 18, 18, 18]
 Decoder lengths: [19, 19, 19, 19, 19, 19, 19, 19, 19, 19]
-Initial sequence: KNWHKRGDRSQRATLNLTWD
-Source k-mers[0]: ['KNW', 'NWH', 'WHK', 'HKR', 'KRG', 'RGD', 'GDR', 'DRS', 'RSQ', 'SQR'] ...
-Target k-mers[0]: ['WNK', 'HWN', 'KHW', 'RKH', 'GRK', 'KAD', 'RDG', 'SRD', 'QSR', 'RQS'] ...</code></pre>
+Initial sequence: YSNCYRGDWYILATLDWGPF
+Source k-mers[0]: ['YSN', 'SNC', 'NCY', 'CYR', 'YRG', 'RGD', 'GDW', 'DWY', 'WYI', 'YIL'] ...
+Target k-mers[0]: ['NSY', 'CNS', 'YCN', 'RYC', 'GRY', 'KAD', 'WDG', 'YWD', 'IYW', 'LIY'] ...</code></pre>
 </div>
 </div>
-<div id="cell-17" class="cell" data-execution_count="39">
+<div id="cell-17" class="cell" data-execution_count="46">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -897,7 +897,7 @@ Target k-mers[0]: ['WNK', 'HWN', 'KHW', 'RKH', 'GRK', 'KAD', 'RDG', 'SRD', 'QSR'
 <span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> outputs, attn_list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-18" class="cell" data-execution_count="40">
+<div id="cell-18" class="cell" data-execution_count="47">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -970,59 +970,59 @@ Target k-mers[0]: ['WNK', 'HWN', 'KHW', 'RKH', 'GRK', 'KAD', 'RDG', 'SRD', 'QSR'
 <span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>    avg_loss <span class="op">=</span> total_loss <span class="op">/</span> <span class="bu">max</span>(<span class="dv">1</span>, num_batches)</span>
 <span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>epochs<span class="sc">}</span><span class="ss"> - Loss: </span><span class="sc">{</span>avg_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1/50 - Loss: 8.1610
-Epoch 2/50 - Loss: 6.9688
-Epoch 3/50 - Loss: 6.6315
-Epoch 4/50 - Loss: 6.3118
-Epoch 5/50 - Loss: 5.9868
-Epoch 6/50 - Loss: 5.6759
-Epoch 7/50 - Loss: 5.3557
-Epoch 8/50 - Loss: 5.0290
-Epoch 9/50 - Loss: 4.6998
-Epoch 10/50 - Loss: 4.3941
-Epoch 11/50 - Loss: 4.0830
-Epoch 12/50 - Loss: 3.7908
-Epoch 13/50 - Loss: 3.5122
-Epoch 14/50 - Loss: 3.2365
-Epoch 15/50 - Loss: 2.9783
-Epoch 16/50 - Loss: 2.7413
-Epoch 17/50 - Loss: 2.5214
-Epoch 18/50 - Loss: 2.3224
-Epoch 19/50 - Loss: 2.1395
-Epoch 20/50 - Loss: 1.9645
-Epoch 21/50 - Loss: 1.8094
-Epoch 22/50 - Loss: 1.6709
-Epoch 23/50 - Loss: 1.5422
-Epoch 24/50 - Loss: 1.4250
-Epoch 25/50 - Loss: 1.3188
-Epoch 26/50 - Loss: 1.2233
-Epoch 27/50 - Loss: 1.1383
-Epoch 28/50 - Loss: 1.0664
-Epoch 29/50 - Loss: 1.0148
-Epoch 30/50 - Loss: 0.9577
-Epoch 31/50 - Loss: 0.8992
-Epoch 32/50 - Loss: 0.8402
-Epoch 33/50 - Loss: 0.7905
-Epoch 34/50 - Loss: 0.7466
-Epoch 35/50 - Loss: 0.7064
-Epoch 36/50 - Loss: 0.6703
-Epoch 37/50 - Loss: 0.6354
-Epoch 38/50 - Loss: 0.6050
-Epoch 39/50 - Loss: 0.5761
-Epoch 40/50 - Loss: 0.5512
-Epoch 41/50 - Loss: 0.5251
-Epoch 42/50 - Loss: 0.5003
-Epoch 43/50 - Loss: 0.4784
-Epoch 44/50 - Loss: 0.4569
-Epoch 45/50 - Loss: 0.4371
-Epoch 46/50 - Loss: 0.4174
-Epoch 47/50 - Loss: 0.3992
-Epoch 48/50 - Loss: 0.3829
-Epoch 49/50 - Loss: 0.3659
-Epoch 50/50 - Loss: 0.3508</code></pre>
+<pre><code>Epoch 1/50 - Loss: 8.1478
+Epoch 2/50 - Loss: 6.9790
+Epoch 3/50 - Loss: 6.7055
+Epoch 4/50 - Loss: 6.4761
+Epoch 5/50 - Loss: 6.2001
+Epoch 6/50 - Loss: 5.8941
+Epoch 7/50 - Loss: 5.5592
+Epoch 8/50 - Loss: 5.2031
+Epoch 9/50 - Loss: 4.8443
+Epoch 10/50 - Loss: 4.4940
+Epoch 11/50 - Loss: 4.1387
+Epoch 12/50 - Loss: 3.7852
+Epoch 13/50 - Loss: 3.4568
+Epoch 14/50 - Loss: 3.1534
+Epoch 15/50 - Loss: 2.8777
+Epoch 16/50 - Loss: 2.6257
+Epoch 17/50 - Loss: 2.3971
+Epoch 18/50 - Loss: 2.1923
+Epoch 19/50 - Loss: 2.0024
+Epoch 20/50 - Loss: 1.8358
+Epoch 21/50 - Loss: 1.6900
+Epoch 22/50 - Loss: 1.5577
+Epoch 23/50 - Loss: 1.4453
+Epoch 24/50 - Loss: 1.3379
+Epoch 25/50 - Loss: 1.2448
+Epoch 26/50 - Loss: 1.1623
+Epoch 27/50 - Loss: 1.0838
+Epoch 28/50 - Loss: 1.0137
+Epoch 29/50 - Loss: 0.9516
+Epoch 30/50 - Loss: 0.8966
+Epoch 31/50 - Loss: 0.8461
+Epoch 32/50 - Loss: 0.8009
+Epoch 33/50 - Loss: 0.7583
+Epoch 34/50 - Loss: 0.7185
+Epoch 35/50 - Loss: 0.6815
+Epoch 36/50 - Loss: 0.6466
+Epoch 37/50 - Loss: 0.6159
+Epoch 38/50 - Loss: 0.5866
+Epoch 39/50 - Loss: 0.5582
+Epoch 40/50 - Loss: 0.5322
+Epoch 41/50 - Loss: 0.5075
+Epoch 42/50 - Loss: 0.4837
+Epoch 43/50 - Loss: 0.4617
+Epoch 44/50 - Loss: 0.4409
+Epoch 45/50 - Loss: 0.4215
+Epoch 46/50 - Loss: 0.4029
+Epoch 47/50 - Loss: 0.3855
+Epoch 48/50 - Loss: 0.3686
+Epoch 49/50 - Loss: 0.3532
+Epoch 50/50 - Loss: 0.3384</code></pre>
 </div>
 </div>
-<div id="cell-19" class="cell" data-execution_count="41">
+<div id="cell-19" class="cell" data-execution_count="48">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델 평가: Token-level Accuracy</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
@@ -1076,11 +1076,11 @@ Epoch 50/50 - Loss: 0.3508</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ==================================================
-Token-level Accuracy: 93.93%
+Token-level Accuracy: 93.98%
 ==================================================</code></pre>
 </div>
 </div>
-<div id="cell-20" class="cell" data-execution_count="42">
+<div id="cell-20" class="cell" data-execution_count="49">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 정성적 평가: 실제 예측 결과 확인</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
@@ -1171,26 +1171,26 @@ Token-level Accuracy: 93.93%
 ======================================================================
 
 [예시 1]
-Input:     KNW NWH WHK HKR KRG RGD GDR DRS RSQ SQR QRA RAT ...
-Target:    WNK HWN KHW RKH GRK KAD RDG SRD QSR RQS ARQ TAR ...
-Predicted: HWN KHW RKH GRK KAD RDG SRD QSR RQS ARQ TAR VCL ...
+Input:     YSN SNC NCY CYR YRG RGD GDW DWY WYI YIL ILA LAT ...
+Target:    NSY CNS YCN RYC GRY KAD WDG YWD IYW LIY ALI TAL ...
+Predicted: CNS YCN RYC GRY KAD WDG YWD IYW LIY ALI TAL VCL ...
 Accuracy:  94.1% (16/17 k-mers correct)
 
 [예시 2]
-Input:     YWH WHL HLR LRR RRG RGD GDC DCI CIL ILM LMA MAT ...
-Target:    HWY LHW RLH RRL GRR KAD CDG ICD LIC MLI AML TAM ...
-Predicted: LHW RLH RRL GRR KAD CDG ICD LIC MLI AML TAM VCL ...
+Input:     EIR IRW RWS WSR SRG RGD GDN DNH NHK HKC KCA CAT ...
+Target:    RIE WRI SWR RSW GRS KAD NDG HND KHN CKH ACK TAC ...
+Predicted: WRI SWR RSW GRS KAD NDG HND KHN CKH ACK TAC VCL ...
 Accuracy:  94.1% (16/17 k-mers correct)
 
 [예시 3]
-Input:     GLH LHI HID IDR DRG RGD GDR DRE REM EMC MCA CAT ...
-Target:    HLG IHL DIH RDI GRD KAD RDG ERD MER CME ACM TAC ...
-Predicted: IHL DIH RDI GRD KAD RDG ERD MER CME ACM TAC VCL ...
+Input:     TVS VSV SVT VTR TRG RGD GDY DYE YEK EKM KMA MAT ...
+Target:    SVT VSV TVS RTV GRT KAD YDG EYD KEY MKE AMK TAM ...
+Predicted: VSV TVS RTV GRT KAD YDG EYD KEY MKE AMK TAM VCL ...
 Accuracy:  94.1% (16/17 k-mers correct)
 ======================================================================</code></pre>
 </div>
 </div>
-<div id="cell-21" class="cell" data-execution_count="43">
+<div id="cell-21" class="cell" data-execution_count="50">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
