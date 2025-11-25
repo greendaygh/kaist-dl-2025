@@ -251,16 +251,12 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#fixed-length-context-vector" id="toc-fixed-length-context-vector" class="nav-link" data-scroll-target="#fixed-length-context-vector"><span class="header-section-number">9.1.1</span> Fixed-length Context Vector</a></li>
   <li><a href="#attention-mechanism" id="toc-attention-mechanism" class="nav-link" data-scroll-target="#attention-mechanism"><span class="header-section-number">9.1.2</span> Attention Mechanism</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">9.1.3</span> Example</a></li>
-  <li><a href="#attention-mechanism-steps-dot-product-attention" id="toc-attention-mechanism-steps-dot-product-attention" class="nav-link" data-scroll-target="#attention-mechanism-steps-dot-product-attention"><span class="header-section-number">9.1.4</span> Attention Mechanism Steps (Dot product attention)</a></li>
-  <li><a href="#simulation-data-protein-sequence-evolution" id="toc-simulation-data-protein-sequence-evolution" class="nav-link" data-scroll-target="#simulation-data-protein-sequence-evolution"><span class="header-section-number">9.1.5</span> Simulation Data: Protein Sequence Evolution</a></li>
-  <li><a href="#notation-guide" id="toc-notation-guide" class="nav-link" data-scroll-target="#notation-guide"><span class="header-section-number">9.1.6</span> Notation Guide</a></li>
-  <li><a href="#dimensions" id="toc-dimensions" class="nav-link" data-scroll-target="#dimensions"><span class="header-section-number">9.1.7</span> Dimensions</a></li>
-  <li><a href="#common-tensor-shapes" id="toc-common-tensor-shapes" class="nav-link" data-scroll-target="#common-tensor-shapes"><span class="header-section-number">9.1.8</span> Common Tensor Shapes</a></li>
-  <li><a href="#data-generation" id="toc-data-generation" class="nav-link" data-scroll-target="#data-generation"><span class="header-section-number">9.1.9</span> Data generation</a></li>
-  <li><a href="#model-class-with-attention" id="toc-model-class-with-attention" class="nav-link" data-scroll-target="#model-class-with-attention"><span class="header-section-number">9.1.10</span> Model class with attention</a></li>
-  <li><a href="#traning" id="toc-traning" class="nav-link" data-scroll-target="#traning"><span class="header-section-number">9.1.11</span> Traning</a></li>
-  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference"><span class="header-section-number">9.1.12</span> Inference</a></li>
+  <li><a href="#simulation-data-protein-sequence-evolution" id="toc-simulation-data-protein-sequence-evolution" class="nav-link" data-scroll-target="#simulation-data-protein-sequence-evolution"><span class="header-section-number">9.1.3</span> Simulation Data: Protein Sequence Evolution</a></li>
+  <li><a href="#data-generation" id="toc-data-generation" class="nav-link" data-scroll-target="#data-generation"><span class="header-section-number">9.1.4</span> Data generation</a></li>
+  <li><a href="#model-class-with-attention" id="toc-model-class-with-attention" class="nav-link" data-scroll-target="#model-class-with-attention"><span class="header-section-number">9.1.5</span> Model class with attention</a></li>
+  <li><a href="#traning" id="toc-traning" class="nav-link" data-scroll-target="#traning"><span class="header-section-number">9.1.6</span> Traning</a></li>
+  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference"><span class="header-section-number">9.1.7</span> Inference</a></li>
+  <li><a href="#visualization" id="toc-visualization" class="nav-link" data-scroll-target="#visualization"><span class="header-section-number">9.1.8</span> Visualization</a></li>
   </ul></li>
   <li><a href="#transformer" id="toc-transformer" class="nav-link" data-scroll-target="#transformer"><span class="header-section-number">9.2</span> Transformer</a></li>
   </ul>
@@ -379,9 +375,8 @@ c_t = \sum_i \alpha_{t,i} h_i
 </ul></li>
 </ul>
 </section>
-</section>
-<section id="example" class="level3" data-number="9.1.3">
-<h3 data-number="9.1.3" class="anchored" data-anchor-id="example"><span class="header-section-number">9.1.3</span> Example</h3>
+<section id="example" class="level4" data-number="9.1.2.3">
+<h4 data-number="9.1.2.3" class="anchored" data-anchor-id="example"><span class="header-section-number">9.1.2.3</span> Example</h4>
 <pre><code>&lt;SOS&gt;MAGKL...&lt;EOS&gt;
 &lt;SOS&gt;MIAEE...&lt;EOS&gt;
 &lt;SOS&gt;MNNQK...&lt;EOS&gt;
@@ -394,8 +389,8 @@ c_t = \sum_i \alpha_{t,i} h_i
 </ul>
 <p><img src="images/attention1.png" class="img-fluid"></p>
 </section>
-<section id="attention-mechanism-steps-dot-product-attention" class="level3" data-number="9.1.4">
-<h3 data-number="9.1.4" class="anchored" data-anchor-id="attention-mechanism-steps-dot-product-attention"><span class="header-section-number">9.1.4</span> Attention Mechanism Steps (Dot product attention)</h3>
+<section id="attention-mechanism-steps-dot-product-attention" class="level4" data-number="9.1.2.4">
+<h4 data-number="9.1.2.4" class="anchored" data-anchor-id="attention-mechanism-steps-dot-product-attention"><span class="header-section-number">9.1.2.4</span> Attention Mechanism Steps (Dot product attention)</h4>
 <ul>
 <li>Alignment Scores
 <ul>
@@ -473,8 +468,9 @@ Context Vector: [-1.67618705  0.63072055  0.64520633 -0.31517228  0.58594798]</c
 <p><img src="images/att1.png" class="img-fluid"></p>
 <p><img src="images/att1-1.png" class="img-fluid"></p>
 </section>
-<section id="simulation-data-protein-sequence-evolution" class="level3" data-number="9.1.5">
-<h3 data-number="9.1.5" class="anchored" data-anchor-id="simulation-data-protein-sequence-evolution"><span class="header-section-number">9.1.5</span> Simulation Data: Protein Sequence Evolution</h3>
+</section>
+<section id="simulation-data-protein-sequence-evolution" class="level3" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="simulation-data-protein-sequence-evolution"><span class="header-section-number">9.1.3</span> Simulation Data: Protein Sequence Evolution</h3>
 <p>Objective: Train a Seq2Seq model to learn three different transformation rules simultaneously.</p>
 <ol type="1">
 <li><p>Source Sequences</p>
@@ -525,13 +521,12 @@ Context Vector: [-1.67618705  0.63072055  0.64520633 -0.31517228  0.58594798]</c
 <li>Substitution: Simple 1:1 character mapping (easier)</li>
 <li>Inversion: Requires positional understanding (harder, tests cross-attention)</li>
 </ul>
-</section>
-<section id="notation-guide" class="level3" data-number="9.1.6">
-<h3 data-number="9.1.6" class="anchored" data-anchor-id="notation-guide"><span class="header-section-number">9.1.6</span> Notation Guide</h3>
+<section id="notation-guide" class="level4" data-number="9.1.3.1">
+<h4 data-number="9.1.3.1" class="anchored" data-anchor-id="notation-guide"><span class="header-section-number">9.1.3.1</span> Notation Guide</h4>
 <p>Throughout this notebook, we use the following notation consistently:</p>
 </section>
-<section id="dimensions" class="level3" data-number="9.1.7">
-<h3 data-number="9.1.7" class="anchored" data-anchor-id="dimensions"><span class="header-section-number">9.1.7</span> Dimensions</h3>
+<section id="dimensions" class="level4" data-number="9.1.3.2">
+<h4 data-number="9.1.3.2" class="anchored" data-anchor-id="dimensions"><span class="header-section-number">9.1.3.2</span> Dimensions</h4>
 <ul>
 <li><strong>B</strong>: Batch size - number of sequences processed together</li>
 <li><strong>S_src</strong> (or <strong>S</strong>): Source sequence length - number of tokens in input sequence</li>
@@ -542,8 +537,8 @@ Context Vector: [-1.67618705  0.63072055  0.64520633 -0.31517228  0.58594798]</c
 <li><strong>2H</strong>: Bidirectional hidden dimension - concatenated forward and backward LSTM states</li>
 </ul>
 </section>
-<section id="common-tensor-shapes" class="level3" data-number="9.1.8">
-<h3 data-number="9.1.8" class="anchored" data-anchor-id="common-tensor-shapes"><span class="header-section-number">9.1.8</span> Common Tensor Shapes</h3>
+<section id="common-tensor-shapes" class="level4" data-number="9.1.3.3">
+<h4 data-number="9.1.3.3" class="anchored" data-anchor-id="common-tensor-shapes"><span class="header-section-number">9.1.3.3</span> Common Tensor Shapes</h4>
 <ul>
 <li>Source input: <code>(B, S_src)</code></li>
 <li>Target input/output: <code>(B, S_tgt)</code></li>
@@ -554,8 +549,9 @@ Context Vector: [-1.67618705  0.63072055  0.64520633 -0.31517228  0.58594798]</c
 <li>Attention weights: <code>(B, S_src)</code> - probability distribution over source tokens</li>
 </ul>
 </section>
-<section id="data-generation" class="level3" data-number="9.1.9">
-<h3 data-number="9.1.9" class="anchored" data-anchor-id="data-generation"><span class="header-section-number">9.1.9</span> Data generation</h3>
+</section>
+<section id="data-generation" class="level3" data-number="9.1.4">
+<h3 data-number="9.1.4" class="anchored" data-anchor-id="data-generation"><span class="header-section-number">9.1.4</span> Data generation</h3>
 <div id="cell-17" class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -694,8 +690,8 @@ Target k-mers[0]: ['NSY', 'CNS', 'YCN', 'RYC', 'GRY', 'KAD', 'WDG', 'YWD', 'IYW'
 </div>
 </div>
 </section>
-<section id="model-class-with-attention" class="level3" data-number="9.1.10">
-<h3 data-number="9.1.10" class="anchored" data-anchor-id="model-class-with-attention"><span class="header-section-number">9.1.10</span> Model class with attention</h3>
+<section id="model-class-with-attention" class="level3" data-number="9.1.5">
+<h3 data-number="9.1.5" class="anchored" data-anchor-id="model-class-with-attention"><span class="header-section-number">9.1.5</span> Model class with attention</h3>
 <div id="cell-19" class="cell" data-execution_count="46">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
@@ -908,8 +904,8 @@ Target k-mers[0]: ['NSY', 'CNS', 'YCN', 'RYC', 'GRY', 'KAD', 'WDG', 'YWD', 'IYW'
 <span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> outputs, attn_list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="traning" class="level3" data-number="9.1.11">
-<h3 data-number="9.1.11" class="anchored" data-anchor-id="traning"><span class="header-section-number">9.1.11</span> Traning</h3>
+<section id="traning" class="level3" data-number="9.1.6">
+<h3 data-number="9.1.6" class="anchored" data-anchor-id="traning"><span class="header-section-number">9.1.6</span> Traning</h3>
 <div id="cell-21" class="cell" data-execution_count="47">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
@@ -1036,8 +1032,8 @@ Epoch 50/50 - Loss: 0.3384</code></pre>
 </div>
 </div>
 </section>
-<section id="inference" class="level3" data-number="9.1.12">
-<h3 data-number="9.1.12" class="anchored" data-anchor-id="inference"><span class="header-section-number">9.1.12</span> Inference</h3>
+<section id="inference" class="level3" data-number="9.1.7">
+<h3 data-number="9.1.7" class="anchored" data-anchor-id="inference"><span class="header-section-number">9.1.7</span> Inference</h3>
 <div id="cell-23" class="cell" data-execution_count="48">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델 평가: Token-level Accuracy</span></span>
@@ -1206,7 +1202,10 @@ Accuracy:  94.1% (16/17 k-mers correct)
 ======================================================================</code></pre>
 </div>
 </div>
-<div id="cell-25" class="cell" data-execution_count="50">
+</section>
+<section id="visualization" class="level3" data-number="9.1.8">
+<h3 data-number="9.1.8" class="anchored" data-anchor-id="visualization"><span class="header-section-number">9.1.8</span> Visualization</h3>
+<div id="cell-26" class="cell" data-execution_count="50">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
