@@ -257,6 +257,10 @@ window.Quarto = {
   <li><a href="#notation-guide" id="toc-notation-guide" class="nav-link" data-scroll-target="#notation-guide"><span class="header-section-number">9.1.6</span> Notation Guide</a></li>
   <li><a href="#dimensions" id="toc-dimensions" class="nav-link" data-scroll-target="#dimensions"><span class="header-section-number">9.1.7</span> Dimensions</a></li>
   <li><a href="#common-tensor-shapes" id="toc-common-tensor-shapes" class="nav-link" data-scroll-target="#common-tensor-shapes"><span class="header-section-number">9.1.8</span> Common Tensor Shapes</a></li>
+  <li><a href="#data-generation" id="toc-data-generation" class="nav-link" data-scroll-target="#data-generation"><span class="header-section-number">9.1.9</span> Data generation</a></li>
+  <li><a href="#model-class-with-attention" id="toc-model-class-with-attention" class="nav-link" data-scroll-target="#model-class-with-attention"><span class="header-section-number">9.1.10</span> Model class with attention</a></li>
+  <li><a href="#traning" id="toc-traning" class="nav-link" data-scroll-target="#traning"><span class="header-section-number">9.1.11</span> Traning</a></li>
+  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference"><span class="header-section-number">9.1.12</span> Inference</a></li>
   </ul></li>
   <li><a href="#transformer" id="toc-transformer" class="nav-link" data-scroll-target="#transformer"><span class="header-section-number">9.2</span> Transformer</a></li>
   </ul>
@@ -549,7 +553,10 @@ Context Vector: [-1.67618705  0.63072055  0.64520633 -0.31517228  0.58594798]</c
 <li>Logits: <code>(B, S_tgt, V)</code></li>
 <li>Attention weights: <code>(B, S_src)</code> - probability distribution over source tokens</li>
 </ul>
-<div id="cell-16" class="cell" data-execution_count="45">
+</section>
+<section id="data-generation" class="level3" data-number="9.1.9">
+<h3 data-number="9.1.9" class="anchored" data-anchor-id="data-generation"><span class="header-section-number">9.1.9</span> Data generation</h3>
+<div id="cell-17" class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset, DataLoader</span>
@@ -686,7 +693,10 @@ Source k-mers[0]: ['YSN', 'SNC', 'NCY', 'CYR', 'YRG', 'RGD', 'GDW', 'DWY', 'WYI'
 Target k-mers[0]: ['NSY', 'CNS', 'YCN', 'RYC', 'GRY', 'KAD', 'WDG', 'YWD', 'IYW', 'LIY'] ...</code></pre>
 </div>
 </div>
-<div id="cell-17" class="cell" data-execution_count="46">
+</section>
+<section id="model-class-with-attention" class="level3" data-number="9.1.10">
+<h3 data-number="9.1.10" class="anchored" data-anchor-id="model-class-with-attention"><span class="header-section-number">9.1.10</span> Model class with attention</h3>
+<div id="cell-19" class="cell" data-execution_count="46">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -897,7 +907,10 @@ Target k-mers[0]: ['NSY', 'CNS', 'YCN', 'RYC', 'GRY', 'KAD', 'WDG', 'YWD', 'IYW'
 <span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> outputs, attn_list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-18" class="cell" data-execution_count="47">
+</section>
+<section id="traning" class="level3" data-number="9.1.11">
+<h3 data-number="9.1.11" class="anchored" data-anchor-id="traning"><span class="header-section-number">9.1.11</span> Traning</h3>
+<div id="cell-21" class="cell" data-execution_count="47">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1022,7 +1035,10 @@ Epoch 49/50 - Loss: 0.3532
 Epoch 50/50 - Loss: 0.3384</code></pre>
 </div>
 </div>
-<div id="cell-19" class="cell" data-execution_count="48">
+</section>
+<section id="inference" class="level3" data-number="9.1.12">
+<h3 data-number="9.1.12" class="anchored" data-anchor-id="inference"><span class="header-section-number">9.1.12</span> Inference</h3>
+<div id="cell-23" class="cell" data-execution_count="48">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델 평가: Token-level Accuracy</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
@@ -1080,7 +1096,7 @@ Token-level Accuracy: 93.98%
 ==================================================</code></pre>
 </div>
 </div>
-<div id="cell-20" class="cell" data-execution_count="49">
+<div id="cell-24" class="cell" data-execution_count="49">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 정성적 평가: 실제 예측 결과 확인</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
@@ -1190,7 +1206,7 @@ Accuracy:  94.1% (16/17 k-mers correct)
 ======================================================================</code></pre>
 </div>
 </div>
-<div id="cell-21" class="cell" data-execution_count="50">
+<div id="cell-25" class="cell" data-execution_count="50">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
